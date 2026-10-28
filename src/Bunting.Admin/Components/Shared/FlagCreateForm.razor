@@ -4,35 +4,35 @@
 
 @if (!Context.CanEdit)
 {
-    <MudAlert Severity="Severity.Warning" data-testid="read-only">Your role does not allow creating flags.</MudAlert>
+    <MudAlert Severity="Severity.Warning" data-testid="read-only">@L["Your role does not allow creating flags."]</MudAlert>
 }
 else
 {
-    <MudText Typo="Typo.h5" Class="mb-3">New flag</MudText>
+    <MudText Typo="Typo.h5" Class="mb-3">@L["New flag"]</MudText>
     <MudPaper Outlined="true" Class="pa-4">
         <MudStack Spacing="2">
-            <MudTextField T="string" Label="Key" @bind-Value="_key" Immediate="true" Variant="Variant.Outlined" HelperText="Letters, digits, '-', '_' and '.'; cannot be changed later" data-testid="flag-key" />
-            <MudTextField T="string" Label="Name" @bind-Value="_name" Immediate="true" Variant="Variant.Outlined" data-testid="flag-name" />
-            <MudTextField T="string" Label="Description" @bind-Value="_description" Variant="Variant.Outlined" Lines="2" />
-            <MudSelect T="FlagType" Label="Type" Value="_type" ValueChanged="OnType" Variant="Variant.Outlined" data-testid="flag-type">
+            <MudTextField T="string" Label="@L["Key"]" @bind-Value="_key" Immediate="true" Variant="Variant.Outlined" HelperText="@L["Letters, digits, '-', '_' and '.'; cannot be changed later"]" data-testid="flag-key" />
+            <MudTextField T="string" Label="@L["Name"]" @bind-Value="_name" Immediate="true" Variant="Variant.Outlined" data-testid="flag-name" />
+            <MudTextField T="string" Label="@L["Description"]" @bind-Value="_description" Variant="Variant.Outlined" Lines="2" />
+            <MudSelect T="FlagType" Label="@L["Type"]" Value="_type" ValueChanged="OnType" Variant="Variant.Outlined" data-testid="flag-type">
                 @foreach (var type in Enum.GetValues<FlagType>())
                 {
                     <MudSelectItem Value="type">@type</MudSelectItem>
                 }
             </MudSelect>
-            <MudText Typo="Typo.subtitle2">Variants</MudText>
+            <MudText Typo="Typo.subtitle2">@L["Variants"]</MudText>
             <VariantEditor Rows="_rows" Type="_type" Errors="_errors" />
-            <MudSelect T="string" Label="Default variant (served when a new environment is switched on)" @bind-Value="_default" Variant="Variant.Outlined">
+            <MudSelect T="string" Label="@L["Default variant (served when a new environment is switched on)"]" @bind-Value="_default" Variant="Variant.Outlined">
                 @foreach (var row in _rows.Where(r => !string.IsNullOrWhiteSpace(r.Key)))
                 {
                     <MudSelectItem Value="row.Key.Trim()">@row.Key</MudSelectItem>
                 }
             </MudSelect>
-            <MudTextField T="string" Label="Tags" @bind-Value="_tags" Variant="Variant.Outlined" HelperText="Comma separated" />
-            <MudCheckBox T="bool" @bind-Value="_clientSide" Label="Available to client-side SDKs (browsers, mobile)" />
+            <MudTextField T="string" Label="@L["Tags"]" @bind-Value="_tags" Variant="Variant.Outlined" HelperText="@L["Comma separated"]" />
+            <MudCheckBox T="bool" @bind-Value="_clientSide" Label="@L["Available to client-side SDKs (browsers, mobile)"]" />
             <div>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" Disabled="@(_saving || string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_name))" data-testid="create-flag">Create flag</MudButton>
-                <MudButton Href="@($"/p/{Project}")">Cancel</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" Disabled="@(_saving || string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_name))" data-testid="create-flag">@L["Create flag"]</MudButton>
+                <MudButton Href="@($"/p/{Project}")">@L["Cancel"]</MudButton>
             </div>
         </MudStack>
     </MudPaper>

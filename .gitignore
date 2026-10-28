@@ -13,3 +13,4 @@ node_modules/
 *.nupkg
 tests/Bunting.Server.OfrepConformance/node/node_modules/
 .env
+.playwright-mcp/

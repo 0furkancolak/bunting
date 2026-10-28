@@ -4,9 +4,9 @@
 @inject UiGuard Guard
 @inject NavigationManager Navigation
 
-<PageTitle>Projects · Bunting</PageTitle>
+<PageTitle>@L["Projects · Bunting"]</PageTitle>
 
-<MudText Typo="Typo.h4" Class="mb-4">Projects</MudText>
+<MudText Typo="Typo.h4" Class="mb-4">@L["Projects"]</MudText>
 
 @if (_projects is null)
 {
@@ -18,9 +18,9 @@ else
     {
         <MudPaper Class="pa-3 mb-4" Outlined="true" data-testid="new-project">
             <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="2" AlignItems="AlignItems.Center">
-                <MudTextField T="string" Label="Key" @bind-Value="_key" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" HelperText="lowercase letters, digits, dashes" />
-                <MudTextField T="string" Label="Name" @bind-Value="_name" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" />
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Create" Disabled="@(string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_name))">Create project</MudButton>
+                <MudTextField T="string" Label="@L["Key"]" @bind-Value="_key" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" HelperText="@L["lowercase letters, digits, dashes"]" />
+                <MudTextField T="string" Label="@L["Name"]" @bind-Value="_name" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Create" Disabled="@(string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_name))">@L["Create project"]</MudButton>
             </MudStack>
         </MudPaper>
     }
@@ -28,7 +28,7 @@ else
     @if (_projects.Count == 0)
     {
         <MudAlert Severity="Severity.Info" data-testid="no-projects">
-            You are not a member of any project yet. Ask a project owner or an administrator to add you.
+            @L["You are not a member of any project yet. Ask a project owner or an administrator to add you."]
         </MudAlert>
     }
 
@@ -39,10 +39,10 @@ else
                 <MudCard Outlined="true" data-testid="project-card">
                     <MudCardContent>
                         <MudText Typo="Typo.h6">@project.Name</MudText>
-                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">@project.Key · @project.Environments.Count environments</MudText>
+                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">@project.Key · @L["{0} environments", project.Environments.Count]</MudText>
                     </MudCardContent>
                     <MudCardActions>
-                        <MudButton Href="@($"/p/{project.Key}")" Color="Color.Primary">Open</MudButton>
+                        <MudButton Href="@($"/p/{project.Key}")" Color="Color.Primary">@L["Open"]</MudButton>
                     </MudCardActions>
                 </MudCard>
             </MudItem>

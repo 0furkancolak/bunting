@@ -45,7 +45,7 @@ public sealed record ProjectContext(ProjectInfo Project, ProjectRole? Role)
 }
 
 /// <summary>Runs API calls from pages and turns failures into messages (and expired sessions into a new sign-in).</summary>
-public sealed class UiGuard(ISnackbar snackbar, Microsoft.AspNetCore.Components.NavigationManager navigation)
+public sealed class UiGuard(ISnackbar snackbar, Microsoft.AspNetCore.Components.NavigationManager navigation, Microsoft.Extensions.Localization.IStringLocalizer<SharedResource> localizer)
 {
     /// <summary>Runs <paramref name="action"/>; returns whether it succeeded.</summary>
     public async Task<bool> RunAsync(Func<Task> action, string? success = null)
@@ -55,7 +55,7 @@ public sealed class UiGuard(ISnackbar snackbar, Microsoft.AspNetCore.Components.
             await action();
             if (success is not null)
             {
-                snackbar.Add(success, Severity.Success);
+                snackbar.Add(localizer[success], Severity.Success);
             }
 
             return true;
@@ -67,7 +67,7 @@ public sealed class UiGuard(ISnackbar snackbar, Microsoft.AspNetCore.Components.
         }
         catch (HttpRequestException)
         {
-            snackbar.Add("The Bunting server cannot be reached.", Severity.Error);
+            snackbar.Add(localizer["The Bunting server cannot be reached."], Severity.Error);
             return false;
         }
     }
@@ -88,9 +88,9 @@ public sealed class UiGuard(ISnackbar snackbar, Microsoft.AspNetCore.Components.
         }
 
         var text = e.IsConflict && e.CurrentVersion is not null
-            ? "Someone else changed this in the meantime. Reload to see the latest version."
+            ? localizer["Someone else changed this in the meantime. Reload to see the latest version."].Value
             : e.Status == System.Net.HttpStatusCode.Forbidden
-                ? "Your role does not allow this."
+                ? localizer["Your role does not allow this."].Value
                 : e.Message;
         snackbar.Add(text, Severity.Error);
     }

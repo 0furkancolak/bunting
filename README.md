@@ -45,6 +45,8 @@ More in [docs/architecture.md](docs/architecture.md) and the [ADRs](docs/adr).
 | --- | --- | --- |
 | ![Playground](docs/screenshots/playground.png) | ![Audit log](docs/screenshots/audit-log.png) | ![Flag list on a phone](docs/screenshots/flags-mobile.png) |
 
+The admin UI is available in English and Turkish ([Türkçe ekran görüntüsü](docs/screenshots/flags-tr.png)). It starts in the language of the browser; the `EN`/`TR` button in the top bar switches it and is remembered in a cookie. To add a language, add `src/Bunting.Admin/Resources/SharedResource.<culture>.resx` (the English text is the key) and list the culture in `UiCultures.Supported`.
+
 ## Quick start (5 minutes)
 
 You need Docker. For the Node and .NET samples also Node 18+ / the .NET 10 SDK.

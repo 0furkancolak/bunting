@@ -11,24 +11,24 @@ else
     <MudStack Spacing="2">
         @if (Context.CanEdit && _editing is null)
         {
-            <div><MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="StartNew" data-testid="new-segment">New segment</MudButton></div>
+            <div><MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="StartNew" data-testid="new-segment">@L["New segment"]</MudButton></div>
         }
 
         @if (_editing is not null)
         {
             <MudPaper Outlined="true" Class="pa-4" data-testid="segment-editor">
                 <MudStack Spacing="2">
-                    <MudTextField T="string" Label="Key" @bind-Value="_editing.Key" Disabled="@(_editing.Existing is not null)" Immediate="true" Variant="Variant.Outlined" data-testid="segment-key" />
-                    <MudTextField T="string" Label="Always included (targeting keys)" @bind-Value="_editing.Included" Lines="3" Variant="Variant.Outlined" HelperText="One per line" Disabled="@(!Context.CanEdit)" />
-                    <MudTextField T="string" Label="Always excluded (targeting keys)" @bind-Value="_editing.Excluded" Lines="3" Variant="Variant.Outlined" HelperText="Excluded wins over included and conditions" Disabled="@(!Context.CanEdit)" />
-                    <MudText Typo="Typo.subtitle2">Members by condition (all must match)</MudText>
+                    <MudTextField T="string" Label="@L["Key"]" @bind-Value="_editing.Key" Disabled="@(_editing.Existing is not null)" Immediate="true" Variant="Variant.Outlined" data-testid="segment-key" />
+                    <MudTextField T="string" Label="@L["Always included (targeting keys)"]" @bind-Value="_editing.Included" Lines="3" Variant="Variant.Outlined" HelperText="@L["One per line"]" Disabled="@(!Context.CanEdit)" />
+                    <MudTextField T="string" Label="@L["Always excluded (targeting keys)"]" @bind-Value="_editing.Excluded" Lines="3" Variant="Variant.Outlined" HelperText="@L["Excluded wins over included and conditions"]" Disabled="@(!Context.CanEdit)" />
+                    <MudText Typo="Typo.subtitle2">@L["Members by condition (all must match)"]</MudText>
                     <ConditionEditor Conditions="_editing.Conditions" CanEdit="Context.CanEdit" />
                     <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="2">
                         @if (Context.CanEdit)
                         {
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" Disabled="@string.IsNullOrWhiteSpace(_editing.Key)" data-testid="save-segment">Save segment</MudButton>
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" Disabled="@string.IsNullOrWhiteSpace(_editing.Key)" data-testid="save-segment">@L["Save segment"]</MudButton>
                         }
-                        <MudButton OnClick="() => _editing = null">Close</MudButton>
+                        <MudButton OnClick="() => _editing = null">@L["Close"]</MudButton>
                     </MudStack>
                 </MudStack>
             </MudPaper>
@@ -36,10 +36,10 @@ else
 
         <MudTable Breakpoint="Breakpoint.None" T="SegmentInfo" Items="_segments" Dense="true" Outlined="true" Elevation="0" data-testid="segment-table">
             <HeaderContent>
-                <MudTh>Segment</MudTh>
-                <MudTh>Included</MudTh>
-                <MudTh>Excluded</MudTh>
-                <MudTh>Conditions</MudTh>
+                <MudTh>@L["Segment"]</MudTh>
+                <MudTh>@L["Included"]</MudTh>
+                <MudTh>@L["Excluded"]</MudTh>
+                <MudTh>@L["Conditions"]</MudTh>
                 <MudTh></MudTh>
             </HeaderContent>
             <RowTemplate>
@@ -48,14 +48,14 @@ else
                 <MudTd>@context.Excluded.Count</MudTd>
                 <MudTd>@context.Conditions.Count</MudTd>
                 <MudTd>
-                    <MudButton Size="Size.Small" OnClick="() => Edit(context)">@(Context.CanEdit ? "Edit" : "View")</MudButton>
+                    <MudButton Size="Size.Small" OnClick="() => Edit(context)">@(Context.CanEdit ? L["Edit"] : L["View"])</MudButton>
                     @if (Context.CanEdit)
                     {
-                        <MudButton Size="Size.Small" Color="Color.Error" OnClick="() => Delete(context)">Delete</MudButton>
+                        <MudButton Size="Size.Small" Color="Color.Error" OnClick="() => Delete(context)">@L["Delete"]</MudButton>
                     }
                 </MudTd>
             </RowTemplate>
-            <NoRecordsContent><MudText Class="pa-4">No segments in this environment.</MudText></NoRecordsContent>
+            <NoRecordsContent><MudText Class="pa-4">@L["No segments in this environment."]</MudText></NoRecordsContent>
         </MudTable>
     </MudStack>
 }
@@ -127,7 +127,7 @@ else
 
     private async Task Delete(SegmentInfo segment)
     {
-        var confirmed = await Dialogs.ShowMessageBoxAsync("Delete segment?", $"'{segment.Key}' will be removed from {Environment.Name}. Segments that rules still use cannot be deleted.", yesText: "Delete", cancelText: "Cancel");
+        var confirmed = await Dialogs.ShowMessageBoxAsync(L["Delete segment?"], L["'{0}' will be removed from {1}. Segments that rules still use cannot be deleted.", segment.Key, Environment.Name].Value, yesText: L["Delete"], cancelText: L["Cancel"]);
         if (confirmed == true && await Guard.RunAsync(() => Api.DeleteSegmentAsync(Project, Environment.Key, segment.Key, segment.Version), "Segment deleted"))
         {
             await Load();

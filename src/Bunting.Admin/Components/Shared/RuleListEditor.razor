@@ -3,7 +3,7 @@
 <MudStack Spacing="2" data-testid="rules">
     @if (Config.Rules.Count == 0)
     {
-        <MudText Style="color: var(--mud-palette-text-secondary)">No targeting rules. Everyone gets the default rule below.</MudText>
+        <MudText Style="color: var(--mud-palette-text-secondary)">@L["No targeting rules. Everyone gets the default rule below."]</MudText>
     }
 
     @for (var i = 0; i < Config.Rules.Count; i++)
@@ -16,25 +16,25 @@
                 <MudStack Row="true" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Spacing="2">
                     @if (CanEdit)
                     {
-                        <span draggable="true" @ondragstart="() => _dragIndex = index" @ondragend="EndDrag" title="Drag to reorder" aria-label="Drag to reorder" data-testid="rule-handle" style="cursor: grab; display: inline-flex">
+                        <span draggable="true" @ondragstart="() => _dragIndex = index" @ondragend="EndDrag" title="Drag to reorder" aria-label="@L["Drag to reorder"]" data-testid="rule-handle" style="cursor: grab; display: inline-flex">
                             <MudIcon Icon="@Icons.Material.Filled.DragIndicator" />
                         </span>
                     }
-                    <MudText Typo="Typo.subtitle2">Rule @(index + 1)</MudText>
-                    <MudTextField T="string" Label="Id" Value="rule.Id" ValueChanged="v => { rule.Id = v ?? string.Empty; Changed(); }" Disabled="@(!CanEdit)"
+                    <MudText Typo="Typo.subtitle2">@L["Rule {0}", index + 1]</MudText>
+                    <MudTextField T="string" Label="@L["Id"]" Value="rule.Id" ValueChanged="v => { rule.Id = v ?? string.Empty; Changed(); }" Disabled="@(!CanEdit)"
                                   Margin="Margin.Dense" Variant="Variant.Outlined" Style="max-width: 14rem" Immediate="true" data-testid="rule-id" />
-                    <MudTextField T="string" Label="Description" Value="rule.Description" ValueChanged="v => { rule.Description = v; Changed(); }" Disabled="@(!CanEdit)"
+                    <MudTextField T="string" Label="@L["Description"]" Value="rule.Description" ValueChanged="v => { rule.Description = v; Changed(); }" Disabled="@(!CanEdit)"
                                   Margin="Margin.Dense" Variant="Variant.Outlined" Style="flex: 1" />
                     @if (CanEdit)
                     {
-                        <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" aria-label="Move rule up" Disabled="@(index == 0)" OnClick="() => Move(index, -1)" />
-                        <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" aria-label="Move rule down" Disabled="@(index == Config.Rules.Count - 1)" OnClick="() => Move(index, 1)" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" aria-label="Remove rule" OnClick="() => Remove(rule)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" aria-label="@L["Move rule up"]" Disabled="@(index == 0)" OnClick="() => Move(index, -1)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" aria-label="@L["Move rule down"]" Disabled="@(index == Config.Rules.Count - 1)" OnClick="() => Move(index, 1)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" aria-label="@L["Remove rule"]" OnClick="() => Remove(rule)" />
                     }
                 </MudStack>
-                <MudText Typo="Typo.caption">If all of these match</MudText>
+                <MudText Typo="Typo.caption">@L["If all of these match"]</MudText>
                 <ConditionEditor Conditions="rule.Conditions" CanEdit="CanEdit" OnChanged="Changed" />
-                <MudText Typo="Typo.caption">Then serve</MudText>
+                <MudText Typo="Typo.caption">@L["Then serve"]</MudText>
                 <ServeEditor Serve="rule.Serve" Variants="Variants" CanEdit="CanEdit" OnChanged="Changed" />
             </MudStack>
         </MudPaper>
@@ -43,7 +43,7 @@
 
     @if (CanEdit)
     {
-        <div><MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Add" OnClick="Add" data-testid="add-rule">Add rule</MudButton></div>
+        <div><MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Add" OnClick="Add" data-testid="add-rule">@L["Add rule"]</MudButton></div>
     }
 </MudStack>
 

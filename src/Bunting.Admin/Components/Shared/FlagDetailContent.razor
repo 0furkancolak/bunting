@@ -8,35 +8,35 @@
 else
 {
     <MudStack Row="true" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Class="mb-2">
-        <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Href="@($"/p/{Project}")" aria-label="Back to flags" />
+        <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Href="@($"/p/{Project}")" aria-label="@L["Back to flags"]" />
         <MudText Typo="Typo.h5" data-testid="flag-title">@_flag.Key</MudText>
         <MudChip T="string" Size="Size.Small">@_flag.Type</MudChip>
-        @if (_flag.Archived) { <MudChip T="string" Size="Size.Small" Color="Color.Warning">archived</MudChip> }
+        @if (_flag.Archived) { <MudChip T="string" Size="Size.Small" Color="Color.Warning">@L["Archived"]</MudChip> }
     </MudStack>
 
     <MudPaper Outlined="true" Class="pa-4 mb-4" data-testid="flag-form">
         <MudStack Spacing="2">
-            <MudTextField T="string" Label="Name" @bind-Value="_name" Immediate="true" Disabled="@(!Context.CanEdit)" Variant="Variant.Outlined" />
-            <MudTextField T="string" Label="Description" @bind-Value="_description" Disabled="@(!Context.CanEdit)" Variant="Variant.Outlined" Lines="2" />
-            <MudTextField T="string" Label="Tags" @bind-Value="_tags" Disabled="@(!Context.CanEdit)" Variant="Variant.Outlined" HelperText="Comma separated" />
-            <MudText Typo="Typo.subtitle2">Variants</MudText>
+            <MudTextField T="string" Label="@L["Name"]" @bind-Value="_name" Immediate="true" Disabled="@(!Context.CanEdit)" Variant="Variant.Outlined" />
+            <MudTextField T="string" Label="@L["Description"]" @bind-Value="_description" Disabled="@(!Context.CanEdit)" Variant="Variant.Outlined" Lines="2" />
+            <MudTextField T="string" Label="@L["Tags"]" @bind-Value="_tags" Disabled="@(!Context.CanEdit)" Variant="Variant.Outlined" HelperText="@L["Comma separated"]" />
+            <MudText Typo="Typo.subtitle2">@L["Variants"]</MudText>
             <VariantEditor Rows="_rows" Type="_flag.Type" CanEdit="Context.CanEdit" KeysLocked="true" Errors="_errors" />
             <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="4">
-                <MudCheckBox T="bool" @bind-Value="_clientSide" Label="Available to client-side SDKs" Disabled="@(!Context.CanEdit)" />
-                <MudCheckBox T="bool" @bind-Value="_archived" Label="Archived" Disabled="@(!Context.CanEdit)" />
+                <MudCheckBox T="bool" @bind-Value="_clientSide" Label="@L["Available to client-side SDKs"]" Disabled="@(!Context.CanEdit)" />
+                <MudCheckBox T="bool" @bind-Value="_archived" Label="@L["Archived"]" Disabled="@(!Context.CanEdit)" />
             </MudStack>
             @if (Context.CanEdit)
             {
-                <div><MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveFlag" data-testid="save-flag">Save flag</MudButton></div>
+                <div><MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveFlag" data-testid="save-flag">@L["Save flag"]</MudButton></div>
             }
             else
             {
-                <MudText Style="color: var(--mud-palette-text-secondary)" data-testid="read-only">You have read-only access to this project.</MudText>
+                <MudText Style="color: var(--mud-palette-text-secondary)" data-testid="read-only">@L["You have read-only access to this project."]</MudText>
             }
         </MudStack>
     </MudPaper>
 
-    <MudText Typo="Typo.h6" Class="mb-1">Environments</MudText>
+    <MudText Typo="Typo.h6" Class="mb-1">@L["Environments"]</MudText>
     <EnvironmentTabs Context="environment">
         <FlagEnvironmentEditor Project="@Project" Environment="environment" Flag="_flag" />
     </EnvironmentTabs>

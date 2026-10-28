@@ -1,3 +1,4 @@
+using System.Globalization;
 using Bunting.Admin.Api;
 using Bunting.Admin.Infrastructure;
 using Bunting.Domain;
@@ -12,8 +13,11 @@ public sealed class AdminTestContext : BunitContext
 {
     public AdminTestContext(ProjectRole? role = ProjectRole.Owner, bool instanceAdmin = false)
     {
+        // The tests assert English texts whatever the language of the machine they run on.
+        CultureInfo.CurrentUICulture = new CultureInfo("en");
         JSInterop.Mode = JSRuntimeMode.Loose;
         Services.AddMudServices();
+        Services.AddLocalization();
         Api = new FakeApi { Role = role, InstanceAdmin = instanceAdmin };
         Services.AddSingleton(Api);
         Services.AddSingleton<IBuntingApi>(Api);

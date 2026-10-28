@@ -2,21 +2,21 @@
 @inject UiGuard Guard
 
 <MudStack Row="true" Spacing="2" Class="mb-3" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center">
-    <MudSelect T="string" Label="Entity" @bind-Value="_entityType" Clearable="true" Margin="Margin.Dense" Variant="Variant.Outlined" Style="min-width: 10rem" data-testid="audit-entity-type">
+    <MudSelect T="string" Label="@L["Entity"]" @bind-Value="_entityType" Clearable="true" Margin="Margin.Dense" Variant="Variant.Outlined" Style="min-width: 10rem" data-testid="audit-entity-type">
         @foreach (var type in new[] { "project", "environment", "flag", "flag-config", "segment", "api-key", "member" })
         {
             <MudSelectItem Value="type">@type</MudSelectItem>
         }
     </MudSelect>
-    <MudSelect T="string" Label="Environment" @bind-Value="_environment" Clearable="true" Margin="Margin.Dense" Variant="Variant.Outlined" Style="min-width: 10rem">
+    <MudSelect T="string" Label="@L["Environment"]" @bind-Value="_environment" Clearable="true" Margin="Margin.Dense" Variant="Variant.Outlined" Style="min-width: 10rem">
         @foreach (var environment in Context.Project.Environments)
         {
             <MudSelectItem Value="environment.Key">@environment.Name</MudSelectItem>
         }
     </MudSelect>
-    <MudTextField T="string" Label="Entity id (e.g. flag key)" @bind-Value="_entityId" Margin="Margin.Dense" Variant="Variant.Outlined" />
-    <MudTextField T="string" Label="Actor" @bind-Value="_actor" Margin="Margin.Dense" Variant="Variant.Outlined" />
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Search" data-testid="audit-search">Filter</MudButton>
+    <MudTextField T="string" Label="@L["Entity id (e.g. flag key)"]" @bind-Value="_entityId" Margin="Margin.Dense" Variant="Variant.Outlined" />
+    <MudTextField T="string" Label="@L["Actor"]" @bind-Value="_actor" Margin="Margin.Dense" Variant="Variant.Outlined" />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Search" data-testid="audit-search">@L["Filter"]</MudButton>
 </MudStack>
 
 @if (_items is null)
@@ -27,10 +27,10 @@ else
 {
     <MudTable Breakpoint="Breakpoint.None" T="AuditItem" Items="_items" Dense="true" Outlined="true" Elevation="0" Hover="true" data-testid="audit-table">
         <HeaderContent>
-            <MudTh>When</MudTh>
-            <MudTh>Who</MudTh>
-            <MudTh>What</MudTh>
-            <MudTh>Environment</MudTh>
+            <MudTh>@L["When"]</MudTh>
+            <MudTh>@L["Who"]</MudTh>
+            <MudTh>@L["What"]</MudTh>
+            <MudTh>@L["Environment"]</MudTh>
             <MudTh></MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -41,7 +41,7 @@ else
             <MudTd>
                 @if (context.Before is not null || context.After is not null)
                 {
-                    <MudButton Size="Size.Small" OnClick="() => Toggle(context.Id)" data-testid="audit-toggle">@(_open.Contains(context.Id) ? "Hide changes" : "Show changes")</MudButton>
+                    <MudButton Size="Size.Small" OnClick="() => Toggle(context.Id)" data-testid="audit-toggle">@(_open.Contains(context.Id) ? L["Hide changes"] : L["Show changes"])</MudButton>
                 }
             </MudTd>
         </RowTemplate>
@@ -51,11 +51,11 @@ else
                 <MudTd colspan="5"><AuditDiffView Pair="new AuditDiffView.JsonElementPair(context.Before, context.After)" /></MudTd>
             }
         </ChildRowContent>
-        <NoRecordsContent><MudText Class="pa-4">No entries match.</MudText></NoRecordsContent>
+        <NoRecordsContent><MudText Class="pa-4">@L["No entries match."]</MudText></NoRecordsContent>
     </MudTable>
     @if (_next is not null)
     {
-        <MudButton Class="mt-2" OnClick="More" data-testid="audit-more">Load older entries</MudButton>
+        <MudButton Class="mt-2" OnClick="More" data-testid="audit-more">@L["Load older entries"]</MudButton>
     }
 }
 

@@ -3,28 +3,29 @@
 @attribute [AllowAnonymous]
 @attribute [ExcludeFromInteractiveRouting]
 
-<PageTitle>Sign in · Bunting</PageTitle>
+<PageTitle>@L["Sign in · Bunting"]</PageTitle>
 
 <form method="post" action="/account/login" class="auth-card">
     <AntiforgeryToken />
-    <h1>Bunting</h1>
-    <p class="muted">Sign in to manage your flags.</p>
+    <h1>@L["Bunting"]</h1>
+    <p class="muted">@L["Sign in to manage your flags."]</p>
     @if (Error is "credentials")
     {
-        <p class="error" role="alert">Invalid email or password.</p>
+        <p class="error" role="alert">@L["Invalid email or password."]</p>
     }
     else if (Error is "server")
     {
-        <p class="error" role="alert">The Bunting server cannot be reached.</p>
+        <p class="error" role="alert">@L["The Bunting server cannot be reached."]</p>
     }
     else if (Error is "expired")
     {
-        <p class="error" role="alert">Your session expired. Please sign in again.</p>
+        <p class="error" role="alert">@L["Your session expired. Please sign in again."]</p>
     }
     <input type="hidden" name="ReturnUrl" value="@ReturnUrl" />
-    <label>Email<input type="email" name="Email" autocomplete="username" required autofocus /></label>
-    <label>Password<input type="password" name="Password" autocomplete="current-password" required /></label>
-    <button type="submit">Sign in</button>
+    <label>@L["Email"]<input type="email" name="Email" autocomplete="username" required autofocus /></label>
+    <label>@L["Password"]<input type="password" name="Password" autocomplete="current-password" required /></label>
+    <button type="submit">@L["Sign in"]</button>
+    <p class="muted language"><a href="/culture/en?redirect=/login" data-enhance-nav="false">English</a> · <a href="/culture/tr?redirect=/login" data-enhance-nav="false">Türkçe</a></p>
 </form>
 
 @code {

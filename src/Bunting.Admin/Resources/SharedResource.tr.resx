@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Bunting" xml:space="preserve">
+    <value>Bunting</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Kullanıcılar</value>
+  </data>
+  <data name="Toggle theme" xml:space="preserve">
+    <value>Temayı değiştir</value>
+  </data>
+  <data name="Sign out" xml:space="preserve">
+    <value>Çıkış yap</value>
+  </data>
+  <data name="An unhandled error has occurred." xml:space="preserve">
+    <value>Beklenmeyen bir hata oluştu.</value>
+  </data>
+  <data name="Reload" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="Your role does not allow creating flags." xml:space="preserve">
+    <value>Rolünüz flag oluşturmaya izin vermiyor.</value>
+  </data>
+  <data name="New flag" xml:space="preserve">
+    <value>Yeni flag</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Anahtar</value>
+  </data>
+  <data name="Letters, digits, '-', '_' and '.'; cannot be changed later" xml:space="preserve">
+    <value>Harf, rakam, '-', '_' ve '.'; sonradan değiştirilemez</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Açıklama</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Tür</value>
+  </data>
+  <data name="Variants" xml:space="preserve">
+    <value>Varyantlar</value>
+  </data>
+  <data name="Default variant (served when a new environment is switched on)" xml:space="preserve">
+    <value>Varsayılan varyant (yeni bir ortam açıldığında sunulur)</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>Etiketler</value>
+  </data>
+  <data name="Comma separated" xml:space="preserve">
+    <value>Virgülle ayırın</value>
+  </data>
+  <data name="Available to client-side SDKs (browsers, mobile)" xml:space="preserve">
+    <value>İstemci tarafı SDK'lara açık (tarayıcı, mobil)</value>
+  </data>
+  <data name="Create flag" xml:space="preserve">
+    <value>Flag oluştur</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="Flag created" xml:space="preserve">
+    <value>Flag oluşturuldu</value>
+  </data>
+  <data name="Back to flags" xml:space="preserve">
+    <value>Flag listesine dön</value>
+  </data>
+  <data name="Available to client-side SDKs" xml:space="preserve">
+    <value>İstemci tarafı SDK'lara açık</value>
+  </data>
+  <data name="Archived" xml:space="preserve">
+    <value>Arşivlendi</value>
+  </data>
+  <data name="Save flag" xml:space="preserve">
+    <value>Flag'i kaydet</value>
+  </data>
+  <data name="You have read-only access to this project." xml:space="preserve">
+    <value>Bu projeye yalnızca okuma erişiminiz var.</value>
+  </data>
+  <data name="Environments" xml:space="preserve">
+    <value>Ortamlar</value>
+  </data>
+  <data name="Flag saved" xml:space="preserve">
+    <value>Flag kaydedildi</value>
+  </data>
+  <data name="You do not have access to this project, or it does not exist." xml:space="preserve">
+    <value>Bu projeye erişiminiz yok ya da proje mevcut değil.</value>
+  </data>
+  <data name="No role" xml:space="preserve">
+    <value>Rol yok</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Ara</value>
+  </data>
+  <data name="Tag" xml:space="preserve">
+    <value>Etiket</value>
+  </data>
+  <data name="Show archived" xml:space="preserve">
+    <value>Arşivlenenleri göster</value>
+  </data>
+  <data name="Flag" xml:space="preserve">
+    <value>Flag</value>
+  </data>
+  <data name="{0} in {1}" xml:space="preserve">
+    <value>{1} ortamında {0}</value>
+  </data>
+  <data name="No flags match." xml:space="preserve">
+    <value>Eşleşen flag yok.</value>
+  </data>
+  <data name="Turn on in production?" xml:space="preserve">
+    <value>Production'da açılsın mı?</value>
+  </data>
+  <data name="Turn off in production?" xml:space="preserve">
+    <value>Production'da kapatılsın mı?</value>
+  </data>
+  <data name="'{0}' will be enabled for all production traffic immediately." xml:space="preserve">
+    <value>'{0}' tüm production trafiği için hemen etkinleştirilecek.</value>
+  </data>
+  <data name="'{0}' will be disabled for all production traffic immediately." xml:space="preserve">
+    <value>'{0}' tüm production trafiği için hemen devre dışı bırakılacak.</value>
+  </data>
+  <data name="Turn on" xml:space="preserve">
+    <value>Aç</value>
+  </data>
+  <data name="Turn off" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="No targeting rules. Everyone gets the default rule below." xml:space="preserve">
+    <value>Hedefleme kuralı yok. Herkes aşağıdaki varsayılan kuralı alır.</value>
+  </data>
+  <data name="Drag to reorder" xml:space="preserve">
+    <value>Sıralamak için sürükleyin</value>
+  </data>
+  <data name="Rule {0}" xml:space="preserve">
+    <value>Kural {0}</value>
+  </data>
+  <data name="Id" xml:space="preserve">
+    <value>Kimlik</value>
+  </data>
+  <data name="Move rule up" xml:space="preserve">
+    <value>Kuralı yukarı taşı</value>
+  </data>
+  <data name="Move rule down" xml:space="preserve">
+    <value>Kuralı aşağı taşı</value>
+  </data>
+  <data name="Remove rule" xml:space="preserve">
+    <value>Kuralı kaldır</value>
+  </data>
+  <data name="If all of these match" xml:space="preserve">
+    <value>Bunların hepsi eşleşirse</value>
+  </data>
+  <data name="Then serve" xml:space="preserve">
+    <value>O zaman sun</value>
+  </data>
+  <data name="Add rule" xml:space="preserve">
+    <value>Kural ekle</value>
+  </data>
+  <data name="Attribute" xml:space="preserve">
+    <value>Öznitelik</value>
+  </data>
+  <data name="Ignored for 'In segment'" xml:space="preserve">
+    <value>'Segmentte' için yok sayılır</value>
+  </data>
+  <data name="Operator" xml:space="preserve">
+    <value>Operatör</value>
+  </data>
+  <data name="Segment keys" xml:space="preserve">
+    <value>Segment anahtarları</value>
+  </data>
+  <data name="Values" xml:space="preserve">
+    <value>Değerler</value>
+  </data>
+  <data name="One per line or comma separated" xml:space="preserve">
+    <value>Her satıra bir tane ya da virgülle ayırın</value>
+  </data>
+  <data name="Not" xml:space="preserve">
+    <value>Değil</value>
+  </data>
+  <data name="Remove condition" xml:space="preserve">
+    <value>Koşulu kaldır</value>
+  </data>
+  <data name="Add condition" xml:space="preserve">
+    <value>Koşul ekle</value>
+  </data>
+  <data name="In segment" xml:space="preserve">
+    <value>Segmentte</value>
+  </data>
+  <data name="Starts with" xml:space="preserve">
+    <value>Şununla başlar</value>
+  </data>
+  <data name="Ends with" xml:space="preserve">
+    <value>Şununla biter</value>
+  </data>
+  <data name="Serve a variant" xml:space="preserve">
+    <value>Bir varyant sun</value>
+  </data>
+  <data name="Percentage rollout" xml:space="preserve">
+    <value>Yüzdeli yayın</value>
+  </data>
+  <data name="Variant" xml:space="preserve">
+    <value>Varyant</value>
+  </data>
+  <data name="Weight of {0}" xml:space="preserve">
+    <value>{0} ağırlığı</value>
+  </data>
+  <data name="Total: {0}%" xml:space="preserve">
+    <value>Toplam: %{0}</value>
+  </data>
+  <data name="— must be exactly 100%" xml:space="preserve">
+    <value>— tam olarak %100 olmalı</value>
+  </data>
+  <data name="Bucket by (attribute)" xml:space="preserve">
+    <value>Gruplama ölçütü (öznitelik)</value>
+  </data>
+  <data name="Salt" xml:space="preserve">
+    <value>Salt</value>
+  </data>
+  <data name="Entity" xml:space="preserve">
+    <value>Varlık</value>
+  </data>
+  <data name="Environment" xml:space="preserve">
+    <value>Ortam</value>
+  </data>
+  <data name="Entity id (e.g. flag key)" xml:space="preserve">
+    <value>Varlık kimliği (ör. flag anahtarı)</value>
+  </data>
+  <data name="Actor" xml:space="preserve">
+    <value>İşlemi yapan</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filtrele</value>
+  </data>
+  <data name="When" xml:space="preserve">
+    <value>Ne zaman</value>
+  </data>
+  <data name="Who" xml:space="preserve">
+    <value>Kim</value>
+  </data>
+  <data name="What" xml:space="preserve">
+    <value>Ne</value>
+  </data>
+  <data name="Hide changes" xml:space="preserve">
+    <value>Değişiklikleri gizle</value>
+  </data>
+  <data name="Show changes" xml:space="preserve">
+    <value>Değişiklikleri göster</value>
+  </data>
+  <data name="No entries match." xml:space="preserve">
+    <value>Eşleşen kayıt yok.</value>
+  </data>
+  <data name="Load older entries" xml:space="preserve">
+    <value>Daha eski kayıtları yükle</value>
+  </data>
+  <data name="Only project owners manage members." xml:space="preserve">
+    <value>Üyeleri yalnızca proje sahipleri yönetir.</value>
+  </data>
+  <data name="User email" xml:space="preserve">
+    <value>Kullanıcı e-postası</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Rol</value>
+  </data>
+  <data name="Add member" xml:space="preserve">
+    <value>Üye ekle</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Kullanıcı</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Kaldır</value>
+  </data>
+  <data name="No members yet." xml:space="preserve">
+    <value>Henüz üye yok.</value>
+  </data>
+  <data name="Remove member?" xml:space="preserve">
+    <value>Üye kaldırılsın mı?</value>
+  </data>
+  <data name="{0} loses access to this project." xml:space="preserve">
+    <value>{0} bu projeye erişimini kaybeder.</value>
+  </data>
+  <data name="Member added" xml:space="preserve">
+    <value>Üye eklendi</value>
+  </data>
+  <data name="Role updated" xml:space="preserve">
+    <value>Rol güncellendi</value>
+  </data>
+  <data name="Member removed" xml:space="preserve">
+    <value>Üye kaldırıldı</value>
+  </data>
+  <data name="Evaluate flags with the same engine your applications use, against the current configuration of an environment. The context is not stored." xml:space="preserve">
+    <value>Flag'leri, uygulamalarınızın kullandığı aynı motorla bir ortamın güncel yapılandırmasına karşı değerlendirin. Bağlam saklanmaz.</value>
+  </data>
+  <data name="Flag key (empty = all flags)" xml:space="preserve">
+    <value>Flag anahtarı (boş = tüm flag'ler)</value>
+  </data>
+  <data name="Context (JSON)" xml:space="preserve">
+    <value>Bağlam (JSON)</value>
+  </data>
+  <data name="Evaluate" xml:space="preserve">
+    <value>Değerlendir</value>
+  </data>
+  <data name="Ruleset version {0}" xml:space="preserve">
+    <value>Kural seti sürümü {0}</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Değer</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Neden</value>
+  </data>
+  <data name="Matched rule" xml:space="preserve">
+    <value>Eşleşen kural</value>
+  </data>
+  <data name="No flags." xml:space="preserve">
+    <value>Flag yok.</value>
+  </data>
+  <data name="Enabled" xml:space="preserve">
+    <value>Etkin</value>
+  </data>
+  <data name="Disabled (serves the off variant)" xml:space="preserve">
+    <value>Devre dışı (kapalı varyantı sunar)</value>
+  </data>
+  <data name="Off variant" xml:space="preserve">
+    <value>Kapalı varyant</value>
+  </data>
+  <data name="Targeting rules" xml:space="preserve">
+    <value>Hedefleme kuralları</value>
+  </data>
+  <data name="Default rule" xml:space="preserve">
+    <value>Varsayılan kural</value>
+  </data>
+  <data name="Served when no targeting rule matches." xml:space="preserve">
+    <value>Hiçbir hedefleme kuralı eşleşmediğinde sunulur.</value>
+  </data>
+  <data name="Save {0}" xml:space="preserve">
+    <value>{0} ortamını kaydet</value>
+  </data>
+  <data name="Fix the highlighted problems first: rollouts must total 100%, rule ids must be unique." xml:space="preserve">
+    <value>Önce işaretli sorunları düzeltin: yayın yüzdeleri toplamı %100 olmalı, kural kimlikleri benzersiz olmalı.</value>
+  </data>
+  <data name="Save to production?" xml:space="preserve">
+    <value>Production'a kaydedilsin mi?</value>
+  </data>
+  <data name="The targeting of '{0}' in production changes immediately for all traffic." xml:space="preserve">
+    <value>'{0}' flag'inin production hedeflemesi tüm trafik için hemen değişir.</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="Saved {0}" xml:space="preserve">
+    <value>{0} kaydedildi</value>
+  </data>
+  <data name="true" xml:space="preserve">
+    <value>doğru</value>
+  </data>
+  <data name="false" xml:space="preserve">
+    <value>yanlış</value>
+  </data>
+  <data name="Value (JSON)" xml:space="preserve">
+    <value>Değer (JSON)</value>
+  </data>
+  <data name="Remove variant" xml:space="preserve">
+    <value>Varyantı kaldır</value>
+  </data>
+  <data name="Add variant" xml:space="preserve">
+    <value>Varyant ekle</value>
+  </data>
+  <data name="New segment" xml:space="preserve">
+    <value>Yeni segment</value>
+  </data>
+  <data name="Always included (targeting keys)" xml:space="preserve">
+    <value>Her zaman dahil (hedefleme anahtarları)</value>
+  </data>
+  <data name="One per line" xml:space="preserve">
+    <value>Her satıra bir tane</value>
+  </data>
+  <data name="Always excluded (targeting keys)" xml:space="preserve">
+    <value>Her zaman hariç (hedefleme anahtarları)</value>
+  </data>
+  <data name="Excluded wins over included and conditions" xml:space="preserve">
+    <value>Hariç tutma, dahil etme ve koşullardan önceliklidir</value>
+  </data>
+  <data name="Members by condition (all must match)" xml:space="preserve">
+    <value>Koşula göre üyeler (hepsi eşleşmeli)</value>
+  </data>
+  <data name="Save segment" xml:space="preserve">
+    <value>Segmenti kaydet</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="Segment" xml:space="preserve">
+    <value>Segment</value>
+  </data>
+  <data name="Included" xml:space="preserve">
+    <value>Dahil</value>
+  </data>
+  <data name="Excluded" xml:space="preserve">
+    <value>Hariç</value>
+  </data>
+  <data name="Conditions" xml:space="preserve">
+    <value>Koşullar</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Düzenle</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>Görüntüle</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="No segments in this environment." xml:space="preserve">
+    <value>Bu ortamda segment yok.</value>
+  </data>
+  <data name="Delete segment?" xml:space="preserve">
+    <value>Segment silinsin mi?</value>
+  </data>
+  <data name="'{0}' will be removed from {1}. Segments that rules still use cannot be deleted." xml:space="preserve">
+    <value>'{0}', {1} ortamından kaldırılacak. Kurallarda hâlâ kullanılan segmentler silinemez.</value>
+  </data>
+  <data name="Segment saved" xml:space="preserve">
+    <value>Segment kaydedildi</value>
+  </data>
+  <data name="Segment deleted" xml:space="preserve">
+    <value>Segment silindi</value>
+  </data>
+  <data name="Only project owners manage API keys." xml:space="preserve">
+    <value>API anahtarlarını yalnızca proje sahipleri yönetir.</value>
+  </data>
+  <data name="Copy this key now — it is shown only once:" xml:space="preserve">
+    <value>Bu anahtarı şimdi kopyalayın — yalnızca bir kez gösterilir:</value>
+  </data>
+  <data name="I have copied it" xml:space="preserve">
+    <value>Kopyaladım</value>
+  </data>
+  <data name="Server" xml:space="preserve">
+    <value>Sunucu</value>
+  </data>
+  <data name="Client" xml:space="preserve">
+    <value>İstemci</value>
+  </data>
+  <data name="Create key" xml:space="preserve">
+    <value>Anahtar oluştur</value>
+  </data>
+  <data name="Server keys evaluate locally and see all rules — keep them secret. Client keys are safe in browsers and only see flags marked client-side." xml:space="preserve">
+    <value>Sunucu anahtarları yerelde değerlendirir ve tüm kuralları görür — gizli tutun. İstemci anahtarları tarayıcıda güvenle kullanılır ve yalnızca istemci tarafı olarak işaretli flag'leri görür.</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>Oluşturulma</value>
+  </data>
+  <data name="revoked" xml:space="preserve">
+    <value>iptal edildi</value>
+  </data>
+  <data name="Revoke" xml:space="preserve">
+    <value>İptal et</value>
+  </data>
+  <data name="No keys yet." xml:space="preserve">
+    <value>Henüz anahtar yok.</value>
+  </data>
+  <data name="Revoke key?" xml:space="preserve">
+    <value>Anahtar iptal edilsin mi?</value>
+  </data>
+  <data name="Applications using '{0}' (…{1}) lose access immediately." xml:space="preserve">
+    <value>'{0}' (…{1}) anahtarını kullanan uygulamalar erişimi hemen kaybeder.</value>
+  </data>
+  <data name="Key revoked" xml:space="preserve">
+    <value>Anahtar iptal edildi</value>
+  </data>
+  <data name="Not Found" xml:space="preserve">
+    <value>Bulunamadı</value>
+  </data>
+  <data name="Sorry, the content you are looking for does not exist." xml:space="preserve">
+    <value>Üzgünüz, aradığınız içerik mevcut değil.</value>
+  </data>
+  <data name="Playground" xml:space="preserve">
+    <value>Deneme alanı</value>
+  </data>
+  <data name="Projects · Bunting" xml:space="preserve">
+    <value>Projeler · Bunting</value>
+  </data>
+  <data name="Projects" xml:space="preserve">
+    <value>Projeler</value>
+  </data>
+  <data name="lowercase letters, digits, dashes" xml:space="preserve">
+    <value>küçük harf, rakam, tire</value>
+  </data>
+  <data name="Create project" xml:space="preserve">
+    <value>Proje oluştur</value>
+  </data>
+  <data name="You are not a member of any project yet. Ask a project owner or an administrator to add you." xml:space="preserve">
+    <value>Henüz hiçbir projenin üyesi değilsiniz. Bir proje sahibinden ya da yöneticiden sizi eklemesini isteyin.</value>
+  </data>
+  <data name="{0} environments" xml:space="preserve">
+    <value>{0} ortam</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Aç</value>
+  </data>
+  <data name="Project created" xml:space="preserve">
+    <value>Proje oluşturuldu</value>
+  </data>
+  <data name="Audit log" xml:space="preserve">
+    <value>Denetim kaydı</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="Error." xml:space="preserve">
+    <value>Hata.</value>
+  </data>
+  <data name="An error occurred while processing your request." xml:space="preserve">
+    <value>İsteğiniz işlenirken bir hata oluştu.</value>
+  </data>
+  <data name="Request ID:" xml:space="preserve">
+    <value>İstek kimliği:</value>
+  </data>
+  <data name="Sign in · Bunting" xml:space="preserve">
+    <value>Giriş · Bunting</value>
+  </data>
+  <data name="Sign in to manage your flags." xml:space="preserve">
+    <value>Flag'lerinizi yönetmek için giriş yapın.</value>
+  </data>
+  <data name="Invalid email or password." xml:space="preserve">
+    <value>E-posta ya da parola hatalı.</value>
+  </data>
+  <data name="The Bunting server cannot be reached." xml:space="preserve">
+    <value>Bunting sunucusuna ulaşılamıyor.</value>
+  </data>
+  <data name="Your session expired. Please sign in again." xml:space="preserve">
+    <value>Oturumunuzun süresi doldu. Lütfen yeniden giriş yapın.</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-posta</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Parola</value>
+  </data>
+  <data name="Sign in" xml:space="preserve">
+    <value>Giriş yap</value>
+  </data>
+  <data name="Users · Bunting" xml:space="preserve">
+    <value>Kullanıcılar · Bunting</value>
+  </data>
+  <data name="Only instance administrators manage users." xml:space="preserve">
+    <value>Kullanıcıları yalnızca örnek yöneticileri yönetir.</value>
+  </data>
+  <data name="Password (min. 10 characters)" xml:space="preserve">
+    <value>Parola (en az 10 karakter)</value>
+  </data>
+  <data name="Instance administrator" xml:space="preserve">
+    <value>Örnek yöneticisi</value>
+  </data>
+  <data name="Create user" xml:space="preserve">
+    <value>Kullanıcı oluştur</value>
+  </data>
+  <data name="Administrator" xml:space="preserve">
+    <value>Yönetici</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>evet</value>
+  </data>
+  <data name="no" xml:space="preserve">
+    <value>hayır</value>
+  </data>
+  <data name="Delete user?" xml:space="preserve">
+    <value>Kullanıcı silinsin mi?</value>
+  </data>
+  <data name="{0} can no longer sign in." xml:space="preserve">
+    <value>{0} artık giriş yapamaz.</value>
+  </data>
+  <data name="User created" xml:space="preserve">
+    <value>Kullanıcı oluşturuldu</value>
+  </data>
+  <data name="User deleted" xml:space="preserve">
+    <value>Kullanıcı silindi</value>
+  </data>
+  <data name="Flags" xml:space="preserve">
+    <value>Flag'ler</value>
+  </data>
+  <data name="Members" xml:space="preserve">
+    <value>Üyeler</value>
+  </data>
+  <data name="Segments" xml:space="preserve">
+    <value>Segmentler</value>
+  </data>
+  <data name="API keys" xml:space="preserve">
+    <value>API anahtarları</value>
+  </data>
+  <data name="Use true or false." xml:space="preserve">
+    <value>true ya da false girin.</value>
+  </data>
+  <data name="Use a whole number." xml:space="preserve">
+    <value>Tam sayı girin.</value>
+  </data>
+  <data name="Use a number." xml:space="preserve">
+    <value>Sayı girin.</value>
+  </data>
+  <data name="Enter valid JSON." xml:space="preserve">
+    <value>Geçerli bir JSON girin.</value>
+  </data>
+  <data name="A variant needs a key." xml:space="preserve">
+    <value>Varyantın bir anahtarı olmalı.</value>
+  </data>
+  <data name="Variant keys must be unique." xml:space="preserve">
+    <value>Varyant anahtarları benzersiz olmalı.</value>
+  </data>
+  <data name="The context must be a JSON object." xml:space="preserve">
+    <value>Bağlam bir JSON nesnesi olmalı.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Sahip</value>
+  </data>
+  <data name="Editor" xml:space="preserve">
+    <value>Düzenleyici</value>
+  </data>
+  <data name="Viewer" xml:space="preserve">
+    <value>Görüntüleyici</value>
+  </data>
+  <data name="Equals" xml:space="preserve">
+    <value>Eşittir</value>
+  </data>
+  <data name="In" xml:space="preserve">
+    <value>İçinde</value>
+  </data>
+  <data name="Contains" xml:space="preserve">
+    <value>İçerir</value>
+  </data>
+  <data name="Matches" xml:space="preserve">
+    <value>Eşleşir</value>
+  </data>
+  <data name="Before" xml:space="preserve">
+    <value>Öncesi</value>
+  </data>
+  <data name="After" xml:space="preserve">
+    <value>Sonrası</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Dil</value>
+  </data>
+  <data name="Someone else changed this in the meantime. Reload to see the latest version." xml:space="preserve">
+    <value>Bu arada başka biri bunu değiştirdi. Son sürümü görmek için sayfayı yenileyin.</value>
+  </data>
+  <data name="Your role does not allow this." xml:space="preserve">
+    <value>Rolünüz buna izin vermiyor.</value>
+  </data>
+</root>

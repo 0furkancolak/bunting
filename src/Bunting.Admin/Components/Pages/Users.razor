@@ -4,13 +4,13 @@
 @inject UiGuard Guard
 @inject IDialogService Dialogs
 
-<PageTitle>Users · Bunting</PageTitle>
+<PageTitle>@L["Users · Bunting"]</PageTitle>
 
-<MudText Typo="Typo.h4" Class="mb-4">Users</MudText>
+<MudText Typo="Typo.h4" Class="mb-4">@L["Users"]</MudText>
 
 @if (_me is not null && !_me.IsInstanceAdmin)
 {
-    <MudAlert Severity="Severity.Warning" data-testid="read-only">Only instance administrators manage users.</MudAlert>
+    <MudAlert Severity="Severity.Warning" data-testid="read-only">@L["Only instance administrators manage users."]</MudAlert>
 }
 else if (_users is null)
 {
@@ -20,18 +20,18 @@ else
 {
     <MudPaper Outlined="true" Class="pa-3 mb-4">
         <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap">
-            <MudTextField T="string" Label="Email" @bind-Value="_email" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" data-testid="user-email" />
-            <MudTextField T="string" Label="Password (min. 10 characters)" @bind-Value="_password" InputType="InputType.Password" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" />
-            <MudCheckBox T="bool" @bind-Value="_admin" Label="Instance administrator" />
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Create" Disabled="@(string.IsNullOrWhiteSpace(_email) || string.IsNullOrEmpty(_password))" data-testid="create-user">Create user</MudButton>
+            <MudTextField T="string" Label="@L["Email"]" @bind-Value="_email" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" data-testid="user-email" />
+            <MudTextField T="string" Label="@L["Password (min. 10 characters)"]" @bind-Value="_password" InputType="InputType.Password" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" />
+            <MudCheckBox T="bool" @bind-Value="_admin" Label="@L["Instance administrator"]" />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Create" Disabled="@(string.IsNullOrWhiteSpace(_email) || string.IsNullOrEmpty(_password))" data-testid="create-user">@L["Create user"]</MudButton>
         </MudStack>
     </MudPaper>
     <MudTable Breakpoint="Breakpoint.None" T="UserInfo" Items="_users" Dense="true" Outlined="true" Elevation="0" data-testid="user-table">
-        <HeaderContent><MudTh>Email</MudTh><MudTh>Administrator</MudTh><MudTh></MudTh></HeaderContent>
+        <HeaderContent><MudTh>@L["Email"]</MudTh><MudTh>@L["Administrator"]</MudTh><MudTh></MudTh></HeaderContent>
         <RowTemplate>
             <MudTd>@context.Email</MudTd>
-            <MudTd>@(context.IsInstanceAdmin ? "yes" : "no")</MudTd>
-            <MudTd><MudButton Size="Size.Small" Color="Color.Error" OnClick="() => Delete(context)">Delete</MudButton></MudTd>
+            <MudTd>@(context.IsInstanceAdmin ? L["yes"] : L["no"])</MudTd>
+            <MudTd><MudButton Size="Size.Small" Color="Color.Error" OnClick="() => Delete(context)">@L["Delete"]</MudButton></MudTd>
         </RowTemplate>
     </MudTable>
 }
@@ -67,7 +67,7 @@ else
 
     private async Task Delete(UserInfo user)
     {
-        var confirmed = await Dialogs.ShowMessageBoxAsync("Delete user?", $"{user.Email} can no longer sign in.", yesText: "Delete", cancelText: "Cancel");
+        var confirmed = await Dialogs.ShowMessageBoxAsync(L["Delete user?"], L["{0} can no longer sign in.", user.Email].Value, yesText: L["Delete"], cancelText: L["Cancel"]);
         if (confirmed == true && await Guard.RunAsync(() => Api.DeleteUserAsync(user.Id), "User deleted"))
         {
             await Load();

@@ -1,6 +1,7 @@
 @inherits LayoutComponentBase
 @inject CurrentUser User
 @inject IBuntingApi Api
+@inject NavigationManager Navigation
 
 <MudThemeProvider @bind-IsDarkMode="_dark" />
 <MudPopoverProvider />
@@ -10,20 +11,21 @@
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudIcon Icon="@Icons.Material.Filled.Flag" Class="mr-2" />
-        <MudText Typo="Typo.h6"><MudLink Href="/" Color="Color.Inherit" Underline="Underline.None">Bunting</MudLink></MudText>
+        <MudText Typo="Typo.h6"><MudLink Href="/" Color="Color.Inherit" Underline="Underline.None">@L["Bunting"]</MudLink></MudText>
         <MudSpacer />
         @if (_me is not null)
         {
             @if (_me.IsInstanceAdmin)
             {
-                <MudButton Href="/users" Color="Color.Inherit" StartIcon="@Icons.Material.Filled.People" Class="app-bar-users" aria-label="Users">Users</MudButton>
+                <MudButton Href="/users" Color="Color.Inherit" StartIcon="@Icons.Material.Filled.People" Class="app-bar-users" aria-label="@L["Users"]">@L["Users"]</MudButton>
             }
             <MudText Typo="Typo.body2" Class="mx-3 app-bar-user" data-testid="current-user">@_me.Name</MudText>
         }
-        <MudIconButton Icon="@(_dark ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" Color="Color.Inherit" OnClick="() => _dark = !_dark" aria-label="Toggle theme" />
+        <MudButton Href="@LanguageHref" Color="Color.Inherit" Class="app-bar-language" data-enhance-nav="false" aria-label="@L["Language"]">@OtherLanguage.ToUpperInvariant()</MudButton>
+        <MudIconButton Icon="@(_dark ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" Color="Color.Inherit" OnClick="() => _dark = !_dark" aria-label="@L["Toggle theme"]" />
         <form method="post" action="/account/logout">
             <AntiforgeryToken />
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Inherit" StartIcon="@Icons.Material.Filled.Logout" Class="app-bar-signout" aria-label="Sign out">Sign out</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Inherit" StartIcon="@Icons.Material.Filled.Logout" Class="app-bar-signout" aria-label="@L["Sign out"]">@L["Sign out"]</MudButton>
         </form>
     </MudAppBar>
     <MudMainContent>
@@ -34,14 +36,18 @@
 </MudLayout>
 
 <div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
+    @L["An unhandled error has occurred."]
+    <a href="." class="reload">@L["Reload"]</a>
     <span class="dismiss">🗙</span>
 </div>
 
 @code {
     private bool _dark;
     private MeInfo? _me;
+
+    private string OtherLanguage => UiCultures.Current == "tr" ? "en" : "tr";
+
+    private string LanguageHref => $"/culture/{OtherLanguage}?redirect={Uri.EscapeDataString("/" + Navigation.ToBaseRelativePath(Navigation.Uri))}";
 
     protected override async Task OnInitializedAsync()
     {

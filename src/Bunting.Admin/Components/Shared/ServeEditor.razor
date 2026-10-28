@@ -2,13 +2,13 @@
 
 <MudStack Spacing="2" data-testid="serve">
     <MudRadioGroup T="bool" Value="Serve.IsRollout" ValueChanged="v => { Serve.IsRollout = v; Changed(); }" Disabled="@(!CanEdit)">
-        <MudRadio Value="false" Color="Color.Primary">Serve a variant</MudRadio>
-        <MudRadio Value="true" Color="Color.Primary">Percentage rollout</MudRadio>
+        <MudRadio Value="false" Color="Color.Primary">@L["Serve a variant"]</MudRadio>
+        <MudRadio Value="true" Color="Color.Primary">@L["Percentage rollout"]</MudRadio>
     </MudRadioGroup>
 
     @if (!Serve.IsRollout)
     {
-        <MudSelect T="string" Label="Variant" Value="Serve.Variant" ValueChanged="v => { Serve.Variant = v; Changed(); }"
+        <MudSelect T="string" Label="@L["Variant"]" Value="Serve.Variant" ValueChanged="v => { Serve.Variant = v; Changed(); }"
                    Disabled="@(!CanEdit)" Style="max-width: 20rem" Margin="Margin.Dense" Variant="Variant.Outlined" data-testid="serve-variant">
             @foreach (var key in Variants)
             {
@@ -25,19 +25,19 @@
                 <MudStack Row="true" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Spacing="2">
                     <MudText Style="width: 8rem" Class="text-truncate">@w.Variant</MudText>
                     <MudSlider T="double" Min="0" Max="100" Step="1" Value="w.Percent" ValueChanged="v => { w.Percent = v; Changed(); }"
-                               Disabled="@(!CanEdit)" Style="min-width: 12rem; flex: 1" aria-label="@($"Weight of {w.Variant}")" />
+                               Disabled="@(!CanEdit)" Style="min-width: 12rem; flex: 1" aria-label="@L["Weight of {0}", w.Variant]" />
                     <MudNumericField T="double" Value="w.Percent" ValueChanged="v => { w.Percent = Math.Clamp(v, 0, 100); Changed(); }"
                                      Min="0" Max="100" Step="0.5" Format="0.##" Disabled="@(!CanEdit)" Style="width: 6.5rem"
                                      Margin="Margin.Dense" Variant="Variant.Outlined" HideSpinButtons="true" Adornment="Adornment.End" AdornmentText="%" />
                 </MudStack>
             }
             <MudText Color="@(Serve.IsValid ? Color.Success : Color.Error)" Typo="Typo.body2" data-testid="rollout-total">
-                Total: @Serve.TotalPercent.ToString("0.##")% @(Serve.IsValid ? string.Empty : "— must be exactly 100%")
+                @L["Total: {0}%", Serve.TotalPercent.ToString("0.##")] @(Serve.IsValid ? string.Empty : L["— must be exactly 100%"])
             </MudText>
             <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="2">
-                <MudTextField T="string" Label="Bucket by (attribute)" Value="Serve.BucketBy" ValueChanged="v => { Serve.BucketBy = v; Changed(); }"
+                <MudTextField T="string" Label="@L["Bucket by (attribute)"]" Value="Serve.BucketBy" ValueChanged="v => { Serve.BucketBy = v; Changed(); }"
                               Disabled="@(!CanEdit)" Placeholder="targetingKey" Margin="Margin.Dense" Variant="Variant.Outlined" />
-                <MudTextField T="string" Label="Salt" Value="Serve.Salt" ValueChanged="v => { Serve.Salt = v; Changed(); }"
+                <MudTextField T="string" Label="@L["Salt"]" Value="Serve.Salt" ValueChanged="v => { Serve.Salt = v; Changed(); }"
                               Disabled="@(!CanEdit)" Margin="Margin.Dense" Variant="Variant.Outlined" />
             </MudStack>
         </MudStack>

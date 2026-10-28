@@ -64,3 +64,6 @@ h1:focus {
     .app-bar-users, .app-bar-signout { min-width: 0; padding: 6px 8px; }
     .mud-typography-h4 { font-size: 1.6rem; }
 }
+.auth-card .language { font-size: .8rem; text-align: center; }
+.auth-card .language a { color: inherit; }
+@media (max-width: 600px) { .app-bar-language { min-width: 0; padding: 6px 8px; } }

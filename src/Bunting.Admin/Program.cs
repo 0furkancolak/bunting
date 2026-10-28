@@ -12,6 +12,7 @@ builder.AddServiceDefaults();
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddMudServices();
+builder.Services.AddUiLocalization();
 builder.Services.AddCascadingAuthenticationState();
 
 // In a container the default key ring would be lost on restart and sign everyone out; keep it on a volume.
@@ -51,12 +52,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseRequestLocalization();
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
 
 app.MapDefaultEndpoints();
+app.MapCultureEndpoint();
 app.MapStaticAssets();
 
 app.MapPost("/account/login", async (HttpContext http, [FromForm] LoginForm form, IHttpClientFactory clients) =>

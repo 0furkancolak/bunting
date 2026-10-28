@@ -12,8 +12,8 @@ else
     <MudStack Spacing="3" data-testid="environment-editor">
         <MudStack Row="true" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Spacing="3">
             <MudSwitch T="bool" Value="_config.Enabled" ValueChanged="v => { _config.Enabled = v; }" Color="Color.Success" Disabled="@(!Context.CanEdit)"
-                       Label="@(_config.Enabled ? "Enabled" : "Disabled (serves the off variant)")" data-testid="enabled" />
-            <MudSelect T="string" Label="Off variant" Value="_config.OffVariant" ValueChanged="v => { _config.OffVariant = v ?? string.Empty; }" Disabled="@(!Context.CanEdit)"
+                       Label="@(_config.Enabled ? L["Enabled"] : L["Disabled (serves the off variant)"])" data-testid="enabled" />
+            <MudSelect T="string" Label="@L["Off variant"]" Value="_config.OffVariant" ValueChanged="v => { _config.OffVariant = v ?? string.Empty; }" Disabled="@(!Context.CanEdit)"
                        Margin="Margin.Dense" Variant="Variant.Outlined" Style="max-width: 14rem">
                 @foreach (var key in variants)
                 {
@@ -22,20 +22,20 @@ else
             </MudSelect>
         </MudStack>
 
-        <MudText Typo="Typo.subtitle1">Targeting rules</MudText>
+        <MudText Typo="Typo.subtitle1">@L["Targeting rules"]</MudText>
         <RuleListEditor Config="_config" Variants="variants" CanEdit="Context.CanEdit" OnChanged="Refresh" />
 
-        <MudText Typo="Typo.subtitle1">Default rule</MudText>
-        <MudText Typo="Typo.caption">Served when no targeting rule matches.</MudText>
+        <MudText Typo="Typo.subtitle1">@L["Default rule"]</MudText>
+        <MudText Typo="Typo.caption">@L["Served when no targeting rule matches."]</MudText>
         <ServeEditor Serve="_config.Fallthrough" Variants="variants" CanEdit="Context.CanEdit" OnChanged="Refresh" />
 
         @if (Context.CanEdit)
         {
             <div>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" Disabled="@(!_config.IsValid)" data-testid="save-config">Save @Environment.Name</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" Disabled="@(!_config.IsValid)" data-testid="save-config">@L["Save {0}", Environment.Name]</MudButton>
                 @if (!_config.IsValid)
                 {
-                    <MudText Typo="Typo.caption" Color="Color.Error" Class="ml-2" data-testid="config-invalid">Fix the highlighted problems first: rollouts must total 100%, rule ids must be unique.</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Error" Class="ml-2" data-testid="config-invalid">@L["Fix the highlighted problems first: rollouts must total 100%, rule ids must be unique."]</MudText>
                 }
             </div>
         }
@@ -77,10 +77,10 @@ else
         if (Environment.Key == "production")
         {
             var confirmed = await Dialogs.ShowMessageBoxAsync(
-                "Save to production?",
-                $"The targeting of '{Flag.Key}' in production changes immediately for all traffic.",
-                yesText: "Save",
-                cancelText: "Cancel");
+                L["Save to production?"],
+                L["The targeting of '{0}' in production changes immediately for all traffic.", Flag.Key].Value,
+                yesText: L["Save"],
+                cancelText: L["Cancel"]);
             if (confirmed != true)
             {
                 return;
@@ -89,7 +89,7 @@ else
 
         var request = _config.ToRequest();
         FlagConfigInfo? saved = null;
-        if (await Guard.RunAsync(async () => saved = await Api.PutConfigAsync(Project, Environment.Key, Flag.Key, request, _config.Version), $"Saved {Environment.Name}"))
+        if (await Guard.RunAsync(async () => saved = await Api.PutConfigAsync(Project, Environment.Key, Flag.Key, request, _config.Version), L["Saved {0}", Environment.Name]))
         {
             _config = ConfigVm.From(saved!, [.. Flag.Variants.Keys]);
         }
