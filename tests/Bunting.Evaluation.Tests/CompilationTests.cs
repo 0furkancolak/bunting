@@ -121,3 +121,22 @@ public class CompilationTests
         Assert.False(FlagKey.IsValid(null));
     }
 }
+
+public class FlagInfoTests
+{
+    [Fact]
+    public void Flags_lists_metadata_ordered_by_key_including_invalid_ones()
+    {
+        var ruleset = B.Compile(
+        [
+            B.Flag("b") with { ClientSideAvailable = true },
+            B.Flag("a", archived: true),
+            B.Flag("broken", off: "missing"),
+        ]);
+
+        Assert.Equal(["a", "b", "broken"], ruleset.Flags.Select(f => f.Key));
+        Assert.True(ruleset.Flags[0].Archived);
+        Assert.True(ruleset.Flags[1].ClientSideAvailable);
+        Assert.False(ruleset.Flags[2].IsValid);
+    }
+}

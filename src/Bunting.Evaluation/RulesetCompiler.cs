@@ -24,7 +24,13 @@ internal static class RulesetCompiler
             }
         }
 
-        return new CompiledRuleset(snapshot.Version, flags, invalid, diagnostics);
+        var infos = snapshot.Flags
+            .GroupBy(f => f.Key, StringComparer.Ordinal)
+            .Select(g => g.First())
+            .OrderBy(f => f.Key, StringComparer.Ordinal)
+            .Select(f => new FlagInfo(f.Key, f.Type, f.Archived, f.ClientSideAvailable, !invalid.Contains(f.Key)))
+            .ToArray();
+        return new CompiledRuleset(snapshot.Version, flags, invalid, diagnostics, infos);
     }
 
     private static Dictionary<string, CompiledSegment> CompileSegments(RulesetSnapshot snapshot, List<RulesetDiagnostic> diagnostics)

@@ -39,3 +39,6 @@ public enum DiagnosticSeverity
 }
 
 public sealed record RulesetDiagnostic(DiagnosticSeverity Severity, string? FlagKey, string Message);
+
+/// <summary>Static facts about a flag in a compiled ruleset.</summary>
+public sealed record FlagInfo(string Key, FlagType Type, bool Archived, bool ClientSideAvailable, bool IsValid);

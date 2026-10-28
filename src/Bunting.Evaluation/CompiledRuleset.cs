@@ -15,8 +15,10 @@ public sealed class CompiledRuleset
         long version,
         Dictionary<string, CompiledFlag> flags,
         HashSet<string> invalidFlags,
-        List<RulesetDiagnostic> diagnostics)
+        List<RulesetDiagnostic> diagnostics,
+        IReadOnlyList<FlagInfo> flagInfos)
     {
+        Flags = flagInfos;
         Version = version;
         _flags = flags;
         _invalidFlags = invalidFlags;
@@ -24,6 +26,9 @@ public sealed class CompiledRuleset
     }
 
     public long Version { get; }
+
+    /// <summary>Metadata of every flag in the snapshot (including invalid ones), ordered by key.</summary>
+    public IReadOnlyList<FlagInfo> Flags { get; }
 
     /// <summary>Problems found while compiling. Errors make a flag evaluate to <c>PARSE_ERROR</c>.</summary>
     public IReadOnlyList<RulesetDiagnostic> Diagnostics { get; }

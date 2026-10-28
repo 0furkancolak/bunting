@@ -75,6 +75,9 @@ public sealed class ApiKey
 
     /// <summary>Only the SHA-256 hash is stored; the plaintext key is shown once at creation.</summary>
     public required byte[] KeyHash { get; set; }
+
+    /// <summary>Last characters of the key, shown in listings to tell keys apart.</summary>
+    public required string Hint { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset? RevokedAt { get; set; }
 
