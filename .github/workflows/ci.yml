@@ -28,3 +28,27 @@ jobs:
         run: dotnet build Bunting.sln -c Release --no-restore
       - name: Test
         run: dotnet test --solution Bunting.sln -c Release --no-build
+
+  compose-smoke:
+    # The one-command self-host path: build both images, start the stack, seed it, evaluate a flag over OFREP.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Start the stack
+        run: docker compose up -d --build --wait --wait-timeout 180
+      - name: Seed and evaluate
+        run: |
+          key=$(node samples/seed.mjs | grep -o 'bnt_srv_[A-Za-z0-9_-]*' | head -1)
+          test -n "$key"
+          result=$(curl -sf -X POST http://localhost:8080/ofrep/v1/evaluate/flags/new-checkout \
+            -H "X-API-Key: $key" -H 'content-type: application/json' \
+            -d '{"context":{"targetingKey":"alice","plan":"pro"}}')
+          echo "$result"
+          echo "$result" | grep -q '"value":true'
+          curl -sf http://localhost:8081/login > /dev/null
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs

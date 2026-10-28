@@ -1,0 +1,24 @@
+<Project>
+  <!-- Shared NuGet metadata of the packable libraries (Bunting.Domain, Bunting.Evaluation, Bunting.Sdk). -->
+  <PropertyGroup>
+    <!-- The release workflow passes -p:Version=<tag without the leading v>. -->
+    <Version Condition="'$(Version)' == ''">0.1.0-local</Version>
+    <Authors>Furkan Çolak</Authors>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/furkancolak/bunting</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/furkancolak/bunting</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <!-- Only meaningful with a git remote (CI and release builds); a local clone without one would warn. -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" Condition="'$(ContinuousIntegrationBuild)' == 'true'" />
+  </ItemGroup>
+</Project>

@@ -1,2 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\build\Packaging.props" />
+  <PropertyGroup>
+    <Description>Targeting types of Bunting (rules, conditions, rollouts) shared by the rule engine, the server and the SDK.</Description>
+    <PackageTags>feature-flags;bunting</PackageTags>
+  </PropertyGroup>
 </Project>

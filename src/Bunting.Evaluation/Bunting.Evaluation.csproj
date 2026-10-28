@@ -1,4 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\build\Packaging.props" />
+  <PropertyGroup>
+    <Description>The Bunting rule engine: compiled, allocation-free feature flag evaluation with OpenFeature-compatible results. No infrastructure dependencies.</Description>
+    <PackageTags>feature-flags;feature-toggles;openfeature;bunting;rules-engine</PackageTags>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bunting.Domain\Bunting.Domain.csproj" />
   </ItemGroup>

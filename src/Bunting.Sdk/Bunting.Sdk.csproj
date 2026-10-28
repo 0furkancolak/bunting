@@ -1,29 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\build\Packaging.props" />
   <PropertyGroup>
-    <PackageId>Bunting.Sdk</PackageId>
     <Description>OpenFeature provider for Bunting with local, in-memory flag evaluation, live updates over SSE and an optional disk snapshot.</Description>
     <PackageTags>feature-flags;feature-toggles;openfeature;bunting</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/furkancolak/bunting</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/furkancolak/bunting</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <Authors>Furkan Çolak</Authors>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="OpenFeature.Hosting" />
-    <!-- Only meaningful with a git remote (CI and release builds); a local clone without one would warn. -->
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" Condition="'$(ContinuousIntegrationBuild)' == 'true'" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bunting.Evaluation\Bunting.Evaluation.csproj" />
-    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Bunting.Sdk.Tests" />
