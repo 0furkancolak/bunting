@@ -42,3 +42,10 @@ end_of_line = lf
 [tests/**.cs]
 # Test names use Snake_case for readability.
 dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1861.severity = none
+dotnet_diagnostic.CA1711.severity = none
+dotnet_diagnostic.CA1305.severity = none
+dotnet_diagnostic.xUnit1051.severity = none
+
+[**/Migrations/*.cs]
+generated_code = true

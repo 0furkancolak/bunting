@@ -18,6 +18,9 @@ public sealed class ProjectEnvironment
 
     /// <summary>Monotonic ruleset version; bumped on every change affecting this environment.</summary>
     public long RulesetVersion { get; set; }
+
+    /// <summary>Display order within the project (creation order).</summary>
+    public int Position { get; set; }
 }
 
 public sealed class Flag
@@ -32,6 +35,9 @@ public sealed class Flag
     public List<string> Tags { get; set; } = [];
     public bool Archived { get; set; }
     public bool ClientSideAvailable { get; set; }
+
+    /// <summary>Optimistic concurrency token (ETag).</summary>
+    public long Version { get; set; }
 }
 
 public sealed class FlagEnvironmentConfig
@@ -55,6 +61,9 @@ public sealed class Segment
     public List<string> Included { get; set; } = [];
     public List<string> Excluded { get; set; } = [];
     public List<Condition> Conditions { get; set; } = [];
+
+    /// <summary>Optimistic concurrency token (ETag).</summary>
+    public long Version { get; set; }
 }
 
 public sealed class ApiKey
@@ -76,6 +85,8 @@ public sealed class ApiKey
 public sealed class AuditEntry
 {
     public Guid Id { get; set; }
+    public Guid ProjectId { get; set; }
+    public Guid? EnvironmentId { get; set; }
     public required string Actor { get; set; }
     public DateTimeOffset Timestamp { get; set; }
     public required string EntityType { get; set; }
