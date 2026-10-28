@@ -1,0 +1,12 @@
+{
+  "name": "bunting-ofrep-conformance",
+  "private": true,
+  "type": "module",
+  "description": "Drives Bunting through the official OpenFeature JS SDKs and OFREP providers.",
+  "dependencies": {
+    "@openfeature/ofrep-provider": "0.2.5",
+    "@openfeature/ofrep-web-provider": "0.4.3",
+    "@openfeature/server-sdk": "1.23.0",
+    "@openfeature/web-sdk": "1.10.0"
+  }
+}
