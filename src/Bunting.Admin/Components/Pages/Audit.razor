@@ -1,0 +1,12 @@
+@page "/p/{Project}/audit"
+
+<PageTitle>Audit log · @Project · Bunting</PageTitle>
+
+<ProjectShell Project="@Project" Section="audit">
+    <AuditContent Project="@Project" />
+</ProjectShell>
+
+@code {
+    [Parameter]
+    public string Project { get; set; } = string.Empty;
+}

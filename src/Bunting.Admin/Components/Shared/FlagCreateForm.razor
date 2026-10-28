@@ -1,0 +1,84 @@
+@inject IBuntingApi Api
+@inject UiGuard Guard
+@inject NavigationManager Navigation
+
+@if (!Context.CanEdit)
+{
+    <MudAlert Severity="Severity.Warning" data-testid="read-only">Your role does not allow creating flags.</MudAlert>
+}
+else
+{
+    <MudText Typo="Typo.h5" Class="mb-3">New flag</MudText>
+    <MudPaper Outlined="true" Class="pa-4">
+        <MudStack Spacing="2">
+            <MudTextField T="string" Label="Key" @bind-Value="_key" Immediate="true" Variant="Variant.Outlined" HelperText="Letters, digits, '-', '_' and '.'; cannot be changed later" data-testid="flag-key" />
+            <MudTextField T="string" Label="Name" @bind-Value="_name" Immediate="true" Variant="Variant.Outlined" data-testid="flag-name" />
+            <MudTextField T="string" Label="Description" @bind-Value="_description" Variant="Variant.Outlined" Lines="2" />
+            <MudSelect T="FlagType" Label="Type" Value="_type" ValueChanged="OnType" Variant="Variant.Outlined" data-testid="flag-type">
+                @foreach (var type in Enum.GetValues<FlagType>())
+                {
+                    <MudSelectItem Value="type">@type</MudSelectItem>
+                }
+            </MudSelect>
+            <MudText Typo="Typo.subtitle2">Variants</MudText>
+            <VariantEditor Rows="_rows" Type="_type" Errors="_errors" />
+            <MudSelect T="string" Label="Default variant (served when a new environment is switched on)" @bind-Value="_default" Variant="Variant.Outlined">
+                @foreach (var row in _rows.Where(r => !string.IsNullOrWhiteSpace(r.Key)))
+                {
+                    <MudSelectItem Value="row.Key.Trim()">@row.Key</MudSelectItem>
+                }
+            </MudSelect>
+            <MudTextField T="string" Label="Tags" @bind-Value="_tags" Variant="Variant.Outlined" HelperText="Comma separated" />
+            <MudCheckBox T="bool" @bind-Value="_clientSide" Label="Available to client-side SDKs (browsers, mobile)" />
+            <div>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" Disabled="@(_saving || string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_name))" data-testid="create-flag">Create flag</MudButton>
+                <MudButton Href="@($"/p/{Project}")">Cancel</MudButton>
+            </div>
+        </MudStack>
+    </MudPaper>
+}
+
+@code {
+    private string _key = string.Empty;
+    private string _name = string.Empty;
+    private string? _description;
+    private FlagType _type = FlagType.Boolean;
+    private List<VariantVm> _rows = VariantForm.Defaults(FlagType.Boolean);
+    private string? _default = "off";
+    private string? _tags;
+    private bool _clientSide;
+    private bool _saving;
+    private Dictionary<int, string> _errors = [];
+
+    [CascadingParameter]
+    public ProjectContext Context { get; set; } = default!;
+
+    [Parameter]
+    public string Project { get; set; } = string.Empty;
+
+    private void OnType(FlagType type)
+    {
+        _type = type;
+        _rows = VariantForm.Defaults(type);
+        _default = _rows[^1].Key;
+        _errors = [];
+    }
+
+    private async Task Save()
+    {
+        if (!VariantForm.TryBuild(_rows, _type, out var variants, out _errors))
+        {
+            return;
+        }
+
+        _saving = true;
+        var tags = (_tags ?? string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+        var request = new CreateFlagRequest(_key.Trim(), _name.Trim(), _description, _type, variants, _default, tags, _clientSide);
+        var created = await Guard.RunAsync(() => Api.CreateFlagAsync(Project, request), "Flag created");
+        _saving = false;
+        if (created)
+        {
+            Navigation.NavigateTo($"/p/{Project}/flags/{request.Key}");
+        }
+    }
+}

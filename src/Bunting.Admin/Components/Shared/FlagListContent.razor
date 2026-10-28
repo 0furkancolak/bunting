@@ -1,0 +1,128 @@
+@inject IBuntingApi Api
+@inject UiGuard Guard
+@inject IDialogService Dialogs
+
+<MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Class="mb-3" Wrap="Wrap.Wrap">
+    <MudTextField T="string" Label="Search" Value="_search" ValueChanged="OnSearch" DebounceInterval="250" Immediate="true" Margin="Margin.Dense" Variant="Variant.Outlined"
+                  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" data-testid="flag-search" />
+    <MudSelect T="string" Label="Tag" Value="_tag" ValueChanged="OnTag" Clearable="true" Margin="Margin.Dense" Variant="Variant.Outlined" Style="min-width: 10rem" data-testid="tag-filter">
+        @foreach (var tag in _allTags)
+        {
+            <MudSelectItem Value="tag">@tag</MudSelectItem>
+        }
+    </MudSelect>
+    <MudSwitch T="bool" Label="Show archived" Value="_archived" ValueChanged="OnArchived" Color="Color.Primary" />
+    <MudSpacer />
+    @if (Context.CanEdit)
+    {
+        <MudButton Href="@($"/p/{Context.Project.Key}/flags/new")" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" data-testid="new-flag">New flag</MudButton>
+    }
+</MudStack>
+
+@if (_flags is null)
+{
+    <MudProgressLinear Indeterminate="true" />
+}
+else
+{
+    <MudTable T="FlagInfo" Items="_flags" Hover="true" Dense="true" Elevation="0" Outlined="true" data-testid="flag-table">
+        <HeaderContent>
+            <MudTh>Flag</MudTh>
+            <MudTh>Type</MudTh>
+            <MudTh>Tags</MudTh>
+            @foreach (var environment in Context.Project.Environments)
+            {
+                <MudTh Style="text-align: center">@environment.Name</MudTh>
+            }
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>
+                <MudLink Href="@($"/p/{Context.Project.Key}/flags/{context.Key}")" data-testid="flag-link">@context.Key</MudLink>
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">@context.Name @(context.Archived ? "· archived" : string.Empty)</MudText>
+            </MudTd>
+            <MudTd>@context.Type</MudTd>
+            <MudTd>@foreach (var tag in context.Tags) { <MudChip T="string" Size="Size.Small">@tag</MudChip> }</MudTd>
+            @foreach (var environment in Context.Project.Environments)
+            {
+                var flag = context;
+                var state = flag.Environments is not null && flag.Environments.TryGetValue(environment.Key, out var s) ? s : null;
+                <MudTd Style="text-align: center">
+                    @if (state is not null)
+                    {
+                        <MudSwitch T="bool" @key="@($"{flag.Key}/{environment.Key}/{_revision}")" Value="state.Enabled" ValueChanged="v => Toggle(flag, environment, v)" Color="Color.Success"
+                                   Disabled="@(!Context.CanEdit || flag.Archived)" aria-label="@($"{flag.Key} in {environment.Name}")"
+                                   data-testid="@($"toggle-{flag.Key}-{environment.Key}")" />
+                    }
+                </MudTd>
+            }
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText Class="pa-4" data-testid="no-flags">No flags match.</MudText>
+        </NoRecordsContent>
+    </MudTable>
+}
+
+@code {
+    private List<FlagInfo>? _flags;
+    private List<string> _allTags = [];
+    private string? _search;
+    private string? _tag;
+    private bool _archived;
+
+    // Bumped when a switch must snap back to the stored state (cancelled confirmation, failed call).
+    private int _revision;
+
+    [CascadingParameter]
+    public ProjectContext Context { get; set; } = default!;
+
+    [Parameter]
+    public string Project { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync() => await Load();
+
+    private async Task Load()
+    {
+        _flags = await Guard.LoadAsync(() => Api.GetFlagsAsync(Project, _search, _tag, _archived)) ?? [];
+        if (_tag is null && string.IsNullOrWhiteSpace(_search))
+        {
+            _allTags = [.. _flags.SelectMany(f => f.Tags).Distinct().Order()];
+        }
+    }
+
+    private Task OnSearch(string? value) { _search = value; return Load(); }
+
+    private Task OnTag(string? value) { _tag = value; return Load(); }
+
+    private Task OnArchived(bool value) { _archived = value; return Load(); }
+
+    /// <summary>The kill switch: one click, but switching a production flag asks for confirmation first.</summary>
+    private async Task Toggle(FlagInfo flag, EnvironmentInfo environment, bool enabled)
+    {
+        if (flag.Environments?.GetValueOrDefault(environment.Key) is not { } state)
+        {
+            return;
+        }
+
+        if (environment.Key == "production")
+        {
+            var confirmed = await Dialogs.ShowMessageBoxAsync(
+                enabled ? "Turn on in production?" : "Turn off in production?",
+                $"'{flag.Key}' will be {(enabled ? "enabled" : "disabled")} for all production traffic immediately.",
+                yesText: enabled ? "Turn on" : "Turn off",
+                cancelText: "Cancel");
+            if (confirmed != true)
+            {
+                _revision++;
+                return;
+            }
+        }
+
+        FlagConfigInfo? result = null;
+        if (await Guard.RunAsync(async () => result = await Api.SetEnabledAsync(Project, environment.Key, flag.Key, enabled, state.Version)))
+        {
+            flag.Environments![environment.Key] = new FlagEnvState(result!.Enabled, result.Version);
+        }
+
+        _revision++;
+    }
+}

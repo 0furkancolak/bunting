@@ -1,0 +1,76 @@
+@inject IBuntingApi Api
+@inject CurrentUser User
+@inject UiGuard Guard
+
+@if (_forbidden)
+{
+    <MudAlert Severity="Severity.Warning" Class="my-4">You do not have access to this project, or it does not exist.</MudAlert>
+}
+else if (_context is null)
+{
+    <MudProgressLinear Indeterminate="true" Class="my-4" />
+}
+else
+{
+    <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-2">
+        <MudText Typo="Typo.h4" data-testid="project-name">@_context.Project.Name</MudText>
+        <MudChip T="string" Size="Size.Small" data-testid="project-role">@(_context.Role?.ToString() ?? "No role")</MudChip>
+    </MudStack>
+    <MudStack Row="true" Spacing="1" Class="mb-4" data-testid="project-nav">
+        @foreach (var (key, label, href) in Sections())
+        {
+            <MudButton Href="@href" Variant="@(Section == key ? Variant.Filled : Variant.Text)" Color="Color.Primary" Size="Size.Small">@label</MudButton>
+        }
+    </MudStack>
+    <CascadingValue Value="_context">
+        @ChildContent
+    </CascadingValue>
+}
+
+@code {
+    private ProjectContext? _context;
+    private bool _forbidden;
+
+    [Parameter, EditorRequired]
+    public string Project { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Section { get; set; } = "flags";
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _context = null;
+        _forbidden = false;
+        try
+        {
+            var project = await Api.GetProjectAsync(Project);
+            _context = new ProjectContext(project, await User.RoleInAsync(Project));
+        }
+        catch (ApiException e) when (e.Status is System.Net.HttpStatusCode.Forbidden or System.Net.HttpStatusCode.NotFound)
+        {
+            _forbidden = true;
+        }
+        catch (ApiException e)
+        {
+            Guard.Report(e);
+            _forbidden = true;
+        }
+    }
+
+    private IEnumerable<(string Key, string Label, string Href)> Sections()
+    {
+        var p = $"/p/{Uri.EscapeDataString(Project)}";
+        yield return ("flags", "Flags", p);
+        yield return ("segments", "Segments", $"{p}/segments");
+        yield return ("playground", "Playground", $"{p}/playground");
+        yield return ("audit", "Audit log", $"{p}/audit");
+        if (_context!.IsOwner)
+        {
+            yield return ("keys", "API keys", $"{p}/keys");
+            yield return ("members", "Members", $"{p}/members");
+        }
+    }
+}

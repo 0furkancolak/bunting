@@ -1,0 +1,29 @@
+<div data-testid="audit-diff" class="mud-paper-outlined" style="overflow-x: auto">
+    @foreach (var line in Lines)
+    {
+        <div class="diff-line @Css(line.Kind)" data-kind="@line.Kind">@Prefix(line.Kind) @line.Text</div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public JsonElementPair Pair { get; set; }
+
+    private IReadOnlyList<DiffLine> Lines => AuditDiff.Compare(Pair.Before, Pair.After);
+
+    private static string Css(DiffKind kind) => kind switch
+    {
+        DiffKind.Added => "diff-added",
+        DiffKind.Removed => "diff-removed",
+        _ => string.Empty,
+    };
+
+    private static string Prefix(DiffKind kind) => kind switch
+    {
+        DiffKind.Added => "+",
+        DiffKind.Removed => "-",
+        _ => " ",
+    };
+
+    public readonly record struct JsonElementPair(System.Text.Json.JsonElement? Before, System.Text.Json.JsonElement? After);
+}

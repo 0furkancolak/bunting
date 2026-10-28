@@ -1,0 +1,102 @@
+@inject IBuntingApi Api
+@inject UiGuard Guard
+@inject IDialogService Dialogs
+
+@if (!Context.IsOwner)
+{
+    <MudAlert Severity="Severity.Warning" data-testid="read-only">Only project owners manage API keys.</MudAlert>
+}
+else if (_keys is null)
+{
+    <MudProgressLinear Indeterminate="true" />
+}
+else
+{
+    <MudStack Spacing="2">
+        @if (_created is not null)
+        {
+            <MudAlert Severity="Severity.Success" data-testid="created-key">
+                Copy this key now — it is shown only once:
+                <code data-testid="created-key-value">@_created.Key</code>
+                <MudButton Size="Size.Small" OnClick="() => _created = null">I have copied it</MudButton>
+            </MudAlert>
+        }
+
+        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+            <MudTextField T="string" Label="Name" @bind-Value="_name" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" data-testid="key-name" />
+            <MudSelect T="ApiKeyType" Label="Type" @bind-Value="_type" Margin="Margin.Dense" Variant="Variant.Outlined" Style="min-width: 9rem" data-testid="key-type">
+                <MudSelectItem Value="ApiKeyType.Server">Server</MudSelectItem>
+                <MudSelectItem Value="ApiKeyType.Client">Client</MudSelectItem>
+            </MudSelect>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Create" Disabled="@string.IsNullOrWhiteSpace(_name)" data-testid="create-key">Create key</MudButton>
+        </MudStack>
+        <MudText Typo="Typo.caption">Server keys evaluate locally and see all rules — keep them secret. Client keys are safe in browsers and only see flags marked client-side.</MudText>
+
+        <MudTable T="ApiKeyInfo" Items="_keys" Dense="true" Outlined="true" Elevation="0" data-testid="key-table">
+            <HeaderContent>
+                <MudTh>Name</MudTh><MudTh>Type</MudTh><MudTh>Key</MudTh><MudTh>Created</MudTh><MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.Name</MudTd>
+                <MudTd>@context.Type</MudTd>
+                <MudTd><code>…@context.Hint</code></MudTd>
+                <MudTd>@context.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd")</MudTd>
+                <MudTd>
+                    @if (context.RevokedAt is not null)
+                    {
+                        <MudChip T="string" Size="Size.Small">revoked</MudChip>
+                    }
+                    else
+                    {
+                        <MudButton Size="Size.Small" Color="Color.Error" OnClick="() => Revoke(context)" data-testid="revoke-key">Revoke</MudButton>
+                    }
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent><MudText Class="pa-4">No keys yet.</MudText></NoRecordsContent>
+        </MudTable>
+    </MudStack>
+}
+
+@code {
+    private List<ApiKeyInfo>? _keys;
+    private CreatedApiKey? _created;
+    private string _name = string.Empty;
+    private ApiKeyType _type = ApiKeyType.Server;
+
+    [CascadingParameter]
+    public ProjectContext Context { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public string Project { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public EnvironmentInfo Environment { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Context.IsOwner)
+        {
+            await Load();
+        }
+    }
+
+    private async Task Load() => _keys = await Guard.LoadAsync(() => Api.GetApiKeysAsync(Project, Environment.Key)) ?? [];
+
+    private async Task Create()
+    {
+        if (await Guard.RunAsync(async () => _created = await Api.CreateApiKeyAsync(Project, Environment.Key, _name.Trim(), _type)))
+        {
+            _name = string.Empty;
+            await Load();
+        }
+    }
+
+    private async Task Revoke(ApiKeyInfo key)
+    {
+        var confirmed = await Dialogs.ShowMessageBoxAsync("Revoke key?", $"Applications using '{key.Name}' (…{key.Hint}) lose access immediately.", yesText: "Revoke", cancelText: "Cancel");
+        if (confirmed == true && await Guard.RunAsync(() => Api.RevokeApiKeyAsync(Project, Environment.Key, key.Id), "Key revoked"))
+        {
+            await Load();
+        }
+    }
+}

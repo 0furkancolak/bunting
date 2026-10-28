@@ -1,0 +1,92 @@
+@using System.Text.Json
+@inject IBuntingApi Api
+@inject UiGuard Guard
+
+<MudText Typo="Typo.body2" Class="mb-3">
+    Evaluate flags with the same engine your applications use, against the current configuration of an environment. The context is not stored.
+</MudText>
+
+<MudGrid>
+    <MudItem xs="12" md="5">
+        <MudPaper Outlined="true" Class="pa-4">
+            <MudStack Spacing="2">
+                <MudSelect T="string" Label="Environment" @bind-Value="_environment" Variant="Variant.Outlined" data-testid="playground-environment">
+                    @foreach (var environment in Context.Project.Environments)
+                    {
+                        <MudSelectItem Value="environment.Key">@environment.Name</MudSelectItem>
+                    }
+                </MudSelect>
+                <MudTextField T="string" Label="Flag key (empty = all flags)" @bind-Value="_flagKey" Variant="Variant.Outlined" data-testid="playground-flag" />
+                <MudTextField T="string" Label="Context (JSON)" @bind-Value="_context" Lines="10" Variant="Variant.Outlined" Immediate="true"
+                              Error="@(_contextError is not null)" ErrorText="@_contextError" Style="font-family: ui-monospace, monospace" data-testid="playground-context" />
+                <div><MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Run" Disabled="@(_contextError is not null)" data-testid="playground-run">Evaluate</MudButton></div>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" md="7">
+        @if (_response is not null)
+        {
+            <MudText Typo="Typo.caption" Class="mb-1">Ruleset version @_response.RulesetVersion</MudText>
+            <MudTable T="PlaygroundResult" Items="_response.Results" Dense="true" Outlined="true" Elevation="0" data-testid="playground-results">
+                <HeaderContent>
+                    <MudTh>Flag</MudTh>
+                    <MudTh>Value</MudTh>
+                    <MudTh>Variant</MudTh>
+                    <MudTh>Reason</MudTh>
+                    <MudTh>Matched rule</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.FlagKey</MudTd>
+                    <MudTd>@(context.Value is { } v ? v.GetRawText() : "—")</MudTd>
+                    <MudTd>@(context.Variant ?? "—")</MudTd>
+                    <MudTd>
+                        @if (context.ErrorCode is not null)
+                        {
+                            <MudChip T="string" Size="Size.Small" Color="Color.Error">@context.ErrorCode</MudChip>
+                        }
+                        else
+                        {
+                            <MudChip T="string" Size="Size.Small">@context.Reason</MudChip>
+                        }
+                    </MudTd>
+                    <MudTd>@(context.RuleId ?? "—")</MudTd>
+                </RowTemplate>
+                <NoRecordsContent><MudText Class="pa-4">No flags.</MudText></NoRecordsContent>
+            </MudTable>
+        }
+    </MudItem>
+</MudGrid>
+
+@code {
+    private string _environment = string.Empty;
+    private string? _flagKey;
+    private string _context = "{\n  \"targetingKey\": \"user-1\",\n  \"plan\": \"pro\"\n}";
+    private PlaygroundResponse? _response;
+
+    [CascadingParameter]
+    public ProjectContext Context { get; set; } = default!;
+
+    [Parameter]
+    public string Project { get; set; } = string.Empty;
+
+    private string? _contextError => Validate(_context);
+
+    protected override void OnInitialized() =>
+        _environment = (Context.Project.Environments.FirstOrDefault(e => e.Key == "development") ?? Context.Project.Environments.First()).Key;
+
+    private static string? Validate(string text)
+    {
+        try
+        {
+            using var document = JsonDocument.Parse(string.IsNullOrWhiteSpace(text) ? "{}" : text);
+            return document.RootElement.ValueKind == JsonValueKind.Object ? null : "The context must be a JSON object.";
+        }
+        catch (JsonException e)
+        {
+            return e.Message;
+        }
+    }
+
+    private async Task Run() =>
+        _response = await Guard.LoadAsync(() => Api.EvaluateAsync(Project, _environment, string.IsNullOrWhiteSpace(_flagKey) ? null : _flagKey.Trim(), _context)) ?? _response;
+}

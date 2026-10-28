@@ -1,0 +1,15 @@
+@page "/p/{Project}/flags/new"
+@inject IBuntingApi Api
+@inject UiGuard Guard
+@inject NavigationManager Navigation
+
+<PageTitle>New flag · @Project · Bunting</PageTitle>
+
+<ProjectShell Project="@Project" Section="flags">
+    <FlagCreateForm Project="@Project" />
+</ProjectShell>
+
+@code {
+    [Parameter]
+    public string Project { get; set; } = string.Empty;
+}

@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
+    <PackageReference Include="MudBlazor" />
+    <ProjectReference Include="..\Bunting.Domain\Bunting.Domain.csproj" />
     <ProjectReference Include="..\Bunting.ServiceDefaults\Bunting.ServiceDefaults.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Bunting.Admin.Tests" />
   </ItemGroup>
 </Project>

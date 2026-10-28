@@ -1,0 +1,14 @@
+@page "/p/{Project}/segments"
+
+<PageTitle>Segments · @Project · Bunting</PageTitle>
+
+<ProjectShell Project="@Project" Section="segments">
+    <EnvironmentTabs Context="environment">
+        <SegmentsPanel Project="@Project" Environment="environment" />
+    </EnvironmentTabs>
+</ProjectShell>
+
+@code {
+    [Parameter]
+    public string Project { get; set; } = string.Empty;
+}

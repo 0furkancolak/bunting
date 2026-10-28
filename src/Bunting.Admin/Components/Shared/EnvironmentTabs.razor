@@ -1,0 +1,16 @@
+<MudTabs Elevation="0" Rounded="true" TabPanelsClass="pt-4" KeepPanelsAlive="false" data-testid="environment-tabs">
+    @foreach (var environment in Context.Project.Environments)
+    {
+        <MudTabPanel Text="@environment.Name" ID="@environment.Key" @key="environment.Key">
+            @ChildContent(environment)
+        </MudTabPanel>
+    }
+</MudTabs>
+
+@code {
+    [CascadingParameter]
+    public ProjectContext Context { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public RenderFragment<EnvironmentInfo> ChildContent { get; set; } = default!;
+}

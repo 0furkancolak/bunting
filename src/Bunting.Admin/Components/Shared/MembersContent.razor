@@ -1,0 +1,89 @@
+@inject IBuntingApi Api
+@inject UiGuard Guard
+@inject IDialogService Dialogs
+
+@if (!Context.IsOwner)
+{
+    <MudAlert Severity="Severity.Warning" data-testid="read-only">Only project owners manage members.</MudAlert>
+}
+else if (_members is null)
+{
+    <MudProgressLinear Indeterminate="true" />
+}
+else
+{
+    <MudStack Spacing="2">
+        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+            <MudTextField T="string" Label="User email" @bind-Value="_email" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" data-testid="member-email" />
+            <MudSelect T="ProjectRole" Label="Role" @bind-Value="_role" Margin="Margin.Dense" Variant="Variant.Outlined" Style="min-width: 9rem">
+                @foreach (var role in Enum.GetValues<ProjectRole>())
+                {
+                    <MudSelectItem Value="role">@role</MudSelectItem>
+                }
+            </MudSelect>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Add" Disabled="@string.IsNullOrWhiteSpace(_email)" data-testid="add-member">Add member</MudButton>
+        </MudStack>
+        <MudTable T="MemberInfo" Items="_members" Dense="true" Outlined="true" Elevation="0" data-testid="member-table">
+            <HeaderContent><MudTh>User</MudTh><MudTh>Role</MudTh><MudTh></MudTh></HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.Email</MudTd>
+                <MudTd>
+                    <MudSelect T="ProjectRole" Value="context.Role" ValueChanged="r => Change(context, r)" Margin="Margin.Dense" Variant="Variant.Outlined" Style="max-width: 9rem">
+                        @foreach (var role in Enum.GetValues<ProjectRole>())
+                        {
+                            <MudSelectItem Value="role">@role</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudTd>
+                <MudTd><MudButton Size="Size.Small" Color="Color.Error" OnClick="() => Remove(context)">Remove</MudButton></MudTd>
+            </RowTemplate>
+            <NoRecordsContent><MudText Class="pa-4">No members yet.</MudText></NoRecordsContent>
+        </MudTable>
+    </MudStack>
+}
+
+@code {
+    private List<MemberInfo>? _members;
+    private string _email = string.Empty;
+    private ProjectRole _role = ProjectRole.Viewer;
+
+    [CascadingParameter]
+    public ProjectContext Context { get; set; } = default!;
+
+    [Parameter]
+    public string Project { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Context.IsOwner)
+        {
+            await Load();
+        }
+    }
+
+    private async Task Load() => _members = await Guard.LoadAsync(() => Api.GetMembersAsync(Project)) ?? [];
+
+    private async Task Add()
+    {
+        if (await Guard.RunAsync(() => Api.AddMemberAsync(Project, _email.Trim(), _role), "Member added"))
+        {
+            _email = string.Empty;
+            await Load();
+        }
+    }
+
+    private async Task Change(MemberInfo member, ProjectRole role)
+    {
+        await Guard.RunAsync(() => Api.UpdateMemberAsync(Project, member.UserId, role), "Role updated");
+        await Load();
+    }
+
+    private async Task Remove(MemberInfo member)
+    {
+        var confirmed = await Dialogs.ShowMessageBoxAsync("Remove member?", $"{member.Email} loses access to this project.", yesText: "Remove", cancelText: "Cancel");
+        if (confirmed == true && await Guard.RunAsync(() => Api.RemoveMemberAsync(Project, member.UserId), "Member removed"))
+        {
+            await Load();
+        }
+    }
+}

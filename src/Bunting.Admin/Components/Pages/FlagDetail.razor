@@ -1,0 +1,15 @@
+@page "/p/{Project}/flags/{Flag}"
+
+<PageTitle>@Flag · @Project · Bunting</PageTitle>
+
+<ProjectShell Project="@Project" Section="flags">
+    <FlagDetailContent Project="@Project" Flag="@Flag" />
+</ProjectShell>
+
+@code {
+    [Parameter]
+    public string Project { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Flag { get; set; } = string.Empty;
+}

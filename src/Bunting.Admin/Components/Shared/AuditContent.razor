@@ -1,0 +1,106 @@
+@inject IBuntingApi Api
+@inject UiGuard Guard
+
+<MudStack Row="true" Spacing="2" Class="mb-3" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center">
+    <MudSelect T="string" Label="Entity" @bind-Value="_entityType" Clearable="true" Margin="Margin.Dense" Variant="Variant.Outlined" Style="min-width: 10rem" data-testid="audit-entity-type">
+        @foreach (var type in new[] { "project", "environment", "flag", "flag-config", "segment", "api-key", "member" })
+        {
+            <MudSelectItem Value="type">@type</MudSelectItem>
+        }
+    </MudSelect>
+    <MudSelect T="string" Label="Environment" @bind-Value="_environment" Clearable="true" Margin="Margin.Dense" Variant="Variant.Outlined" Style="min-width: 10rem">
+        @foreach (var environment in Context.Project.Environments)
+        {
+            <MudSelectItem Value="environment.Key">@environment.Name</MudSelectItem>
+        }
+    </MudSelect>
+    <MudTextField T="string" Label="Entity id (e.g. flag key)" @bind-Value="_entityId" Margin="Margin.Dense" Variant="Variant.Outlined" />
+    <MudTextField T="string" Label="Actor" @bind-Value="_actor" Margin="Margin.Dense" Variant="Variant.Outlined" />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Search" data-testid="audit-search">Filter</MudButton>
+</MudStack>
+
+@if (_items is null)
+{
+    <MudProgressLinear Indeterminate="true" />
+}
+else
+{
+    <MudTable T="AuditItem" Items="_items" Dense="true" Outlined="true" Elevation="0" Hover="true" data-testid="audit-table">
+        <HeaderContent>
+            <MudTh>When</MudTh>
+            <MudTh>Who</MudTh>
+            <MudTh>What</MudTh>
+            <MudTh>Environment</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Timestamp.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</MudTd>
+            <MudTd>@context.Actor</MudTd>
+            <MudTd>@context.EntityType <b>@context.EntityId</b> @context.Action</MudTd>
+            <MudTd>@(context.Environment ?? "—")</MudTd>
+            <MudTd>
+                @if (context.Before is not null || context.After is not null)
+                {
+                    <MudButton Size="Size.Small" OnClick="() => Toggle(context.Id)" data-testid="audit-toggle">@(_open.Contains(context.Id) ? "Hide changes" : "Show changes")</MudButton>
+                }
+            </MudTd>
+        </RowTemplate>
+        <ChildRowContent>
+            @if (_open.Contains(context.Id))
+            {
+                <MudTd colspan="5"><AuditDiffView Pair="new AuditDiffView.JsonElementPair(context.Before, context.After)" /></MudTd>
+            }
+        </ChildRowContent>
+        <NoRecordsContent><MudText Class="pa-4">No entries match.</MudText></NoRecordsContent>
+    </MudTable>
+    @if (_next is not null)
+    {
+        <MudButton Class="mt-2" OnClick="More" data-testid="audit-more">Load older entries</MudButton>
+    }
+}
+
+@code {
+    private List<AuditItem>? _items;
+    private DateTimeOffset? _next;
+    private readonly HashSet<Guid> _open = [];
+    private string? _entityType;
+    private string? _environment;
+    private string? _entityId;
+    private string? _actor;
+
+    [CascadingParameter]
+    public ProjectContext Context { get; set; } = default!;
+
+    [Parameter]
+    public string Project { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync() => await Search();
+
+    private AuditQuery Query(DateTimeOffset? before = null) => new(_entityType, _entityId, _actor, _environment, before);
+
+    private async Task Search()
+    {
+        var page = await Guard.LoadAsync(() => Api.QueryAuditAsync(Project, Query()));
+        _items = page?.Items ?? [];
+        _next = page?.NextBefore;
+        _open.Clear();
+    }
+
+    private async Task More()
+    {
+        var page = await Guard.LoadAsync(() => Api.QueryAuditAsync(Project, Query(_next)));
+        if (page is not null)
+        {
+            _items!.AddRange(page.Items);
+            _next = page.NextBefore;
+        }
+    }
+
+    private void Toggle(Guid id)
+    {
+        if (!_open.Remove(id))
+        {
+            _open.Add(id);
+        }
+    }
+}

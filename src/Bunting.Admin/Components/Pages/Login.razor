@@ -1,0 +1,36 @@
+@page "/login"
+@layout EmptyLayout
+@attribute [AllowAnonymous]
+@attribute [ExcludeFromInteractiveRouting]
+
+<PageTitle>Sign in · Bunting</PageTitle>
+
+<form method="post" action="/account/login" class="auth-card">
+    <AntiforgeryToken />
+    <h1>Bunting</h1>
+    <p class="muted">Sign in to manage your flags.</p>
+    @if (Error is "credentials")
+    {
+        <p class="error" role="alert">Invalid email or password.</p>
+    }
+    else if (Error is "server")
+    {
+        <p class="error" role="alert">The Bunting server cannot be reached.</p>
+    }
+    else if (Error is "expired")
+    {
+        <p class="error" role="alert">Your session expired. Please sign in again.</p>
+    }
+    <input type="hidden" name="ReturnUrl" value="@ReturnUrl" />
+    <label>Email<input type="email" name="Email" autocomplete="username" required autofocus /></label>
+    <label>Password<input type="password" name="Password" autocomplete="current-password" required /></label>
+    <button type="submit">Sign in</button>
+</form>
+
+@code {
+    [SupplyParameterFromQuery]
+    private string? Error { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+}

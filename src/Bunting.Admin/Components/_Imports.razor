@@ -1,11 +1,20 @@
-﻿@using System.Net.Http
+@using System.Net.Http
 @using System.Net.Http.Json
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
 @using static Microsoft.AspNetCore.Components.Web.RenderMode
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
+@using MudBlazor
 @using Bunting.Admin
+@using Bunting.Admin.Api
 @using Bunting.Admin.Components
 @using Bunting.Admin.Components.Layout
+@using Bunting.Admin.Components.Shared
+@using Bunting.Admin.Editing
+@using Bunting.Admin.Infrastructure
+@using Bunting.Domain
+@attribute [Authorize]

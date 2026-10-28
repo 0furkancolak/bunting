@@ -1,0 +1,97 @@
+@inject IBuntingApi Api
+@inject UiGuard Guard
+@inject IDialogService Dialogs
+
+@if (_config is null)
+{
+    <MudProgressLinear Indeterminate="true" />
+}
+else
+{
+    var variants = Flag.Variants.Keys.ToList();
+    <MudStack Spacing="3" data-testid="environment-editor">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudSwitch T="bool" Value="_config.Enabled" ValueChanged="v => { _config.Enabled = v; }" Color="Color.Success" Disabled="@(!Context.CanEdit)"
+                       Label="@(_config.Enabled ? "Enabled" : "Disabled (serves the off variant)")" data-testid="enabled" />
+            <MudSelect T="string" Label="Off variant" Value="_config.OffVariant" ValueChanged="v => { _config.OffVariant = v ?? string.Empty; }" Disabled="@(!Context.CanEdit)"
+                       Margin="Margin.Dense" Variant="Variant.Outlined" Style="max-width: 14rem">
+                @foreach (var key in variants)
+                {
+                    <MudSelectItem Value="key">@key</MudSelectItem>
+                }
+            </MudSelect>
+        </MudStack>
+
+        <MudText Typo="Typo.subtitle1">Targeting rules</MudText>
+        <RuleListEditor Config="_config" Variants="variants" CanEdit="Context.CanEdit" OnChanged="Refresh" />
+
+        <MudText Typo="Typo.subtitle1">Default rule</MudText>
+        <MudText Typo="Typo.caption">Served when no targeting rule matches.</MudText>
+        <ServeEditor Serve="_config.Fallthrough" Variants="variants" CanEdit="Context.CanEdit" OnChanged="Refresh" />
+
+        @if (Context.CanEdit)
+        {
+            <div>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" Disabled="@(!_config.IsValid)" data-testid="save-config">Save @Environment.Name</MudButton>
+                @if (!_config.IsValid)
+                {
+                    <MudText Typo="Typo.caption" Color="Color.Error" Class="ml-2" data-testid="config-invalid">Fix the highlighted problems first: rollouts must total 100%, rule ids must be unique.</MudText>
+                }
+            </div>
+        }
+    </MudStack>
+}
+
+@code {
+    private ConfigVm? _config;
+
+    [CascadingParameter]
+    public ProjectContext Context { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public string Project { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public EnvironmentInfo Environment { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public FlagInfo Flag { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync() => await Load();
+
+    private async Task Load()
+    {
+        var config = await Guard.LoadAsync(() => Api.GetConfigAsync(Project, Environment.Key, Flag.Key));
+        _config = config is null ? null : ConfigVm.From(config, [.. Flag.Variants.Keys]);
+    }
+
+    private void Refresh() => StateHasChanged();
+
+    private async Task Save()
+    {
+        if (_config is null)
+        {
+            return;
+        }
+
+        if (Environment.Key == "production")
+        {
+            var confirmed = await Dialogs.ShowMessageBoxAsync(
+                "Save to production?",
+                $"The targeting of '{Flag.Key}' in production changes immediately for all traffic.",
+                yesText: "Save",
+                cancelText: "Cancel");
+            if (confirmed != true)
+            {
+                return;
+            }
+        }
+
+        var request = _config.ToRequest();
+        FlagConfigInfo? saved = null;
+        if (await Guard.RunAsync(async () => saved = await Api.PutConfigAsync(Project, Environment.Key, Flag.Key, request, _config.Version), $"Saved {Environment.Name}"))
+        {
+            _config = ConfigVm.From(saved!, [.. Flag.Variants.Keys]);
+        }
+    }
+}

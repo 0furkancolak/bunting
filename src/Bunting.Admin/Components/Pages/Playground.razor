@@ -1,0 +1,14 @@
+@page "/p/{Project}/playground"
+@inject IBuntingApi Api
+@inject UiGuard Guard
+
+<PageTitle>Playground · @Project · Bunting</PageTitle>
+
+<ProjectShell Project="@Project" Section="playground">
+    <PlaygroundContent Project="@Project" />
+</ProjectShell>
+
+@code {
+    [Parameter]
+    public string Project { get; set; } = string.Empty;
+}

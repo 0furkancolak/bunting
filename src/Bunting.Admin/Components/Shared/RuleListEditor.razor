@@ -1,0 +1,103 @@
+@* Ordered rules: the first matching rule wins, so the order is editable by drag and drop (or the arrow buttons). *@
+
+<MudStack Spacing="2" data-testid="rules">
+    @if (Config.Rules.Count == 0)
+    {
+        <MudText Style="color: var(--mud-palette-text-secondary)">No targeting rules. Everyone gets the default rule below.</MudText>
+    }
+
+    @for (var i = 0; i < Config.Rules.Count; i++)
+    {
+        var rule = Config.Rules[i];
+        var index = i;
+        <div @key="rule" data-testid="rule" @ondragover="() => _dropTarget = index" @ondragover:preventDefault="true" @ondrop="() => DropOn(index)" @ondrop:preventDefault="true">
+        <MudPaper Outlined="true" Class="@(_dropTarget == index && _dragIndex != index ? "pa-3 mud-border-primary" : "pa-3")">
+            <MudStack Spacing="2">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    @if (CanEdit)
+                    {
+                        <span draggable="true" @ondragstart="() => _dragIndex = index" @ondragend="EndDrag" title="Drag to reorder" aria-label="Drag to reorder" data-testid="rule-handle" style="cursor: grab; display: inline-flex">
+                            <MudIcon Icon="@Icons.Material.Filled.DragIndicator" />
+                        </span>
+                    }
+                    <MudText Typo="Typo.subtitle2">Rule @(index + 1)</MudText>
+                    <MudTextField T="string" Label="Id" Value="rule.Id" ValueChanged="v => { rule.Id = v ?? string.Empty; Changed(); }" Disabled="@(!CanEdit)"
+                                  Margin="Margin.Dense" Variant="Variant.Outlined" Style="max-width: 14rem" Immediate="true" data-testid="rule-id" />
+                    <MudTextField T="string" Label="Description" Value="rule.Description" ValueChanged="v => { rule.Description = v; Changed(); }" Disabled="@(!CanEdit)"
+                                  Margin="Margin.Dense" Variant="Variant.Outlined" Style="flex: 1" />
+                    @if (CanEdit)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.ArrowUpward" Size="Size.Small" aria-label="Move rule up" Disabled="@(index == 0)" OnClick="() => Move(index, -1)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Size="Size.Small" aria-label="Move rule down" Disabled="@(index == Config.Rules.Count - 1)" OnClick="() => Move(index, 1)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" aria-label="Remove rule" OnClick="() => Remove(rule)" />
+                    }
+                </MudStack>
+                <MudText Typo="Typo.caption">If all of these match</MudText>
+                <ConditionEditor Conditions="rule.Conditions" CanEdit="CanEdit" OnChanged="Changed" />
+                <MudText Typo="Typo.caption">Then serve</MudText>
+                <ServeEditor Serve="rule.Serve" Variants="Variants" CanEdit="CanEdit" OnChanged="Changed" />
+            </MudStack>
+        </MudPaper>
+        </div>
+    }
+
+    @if (CanEdit)
+    {
+        <div><MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Add" OnClick="Add" data-testid="add-rule">Add rule</MudButton></div>
+    }
+</MudStack>
+
+@code {
+    [Parameter, EditorRequired]
+    public ConfigVm Config { get; set; } = new();
+
+    [Parameter, EditorRequired]
+    public IReadOnlyCollection<string> Variants { get; set; } = [];
+
+    [Parameter]
+    public bool CanEdit { get; set; } = true;
+
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
+
+    private int _dragIndex = -1;
+    private int _dropTarget = -1;
+
+    private void Changed() => OnChanged.InvokeAsync();
+
+    private void Add()
+    {
+        Config.Rules.Add(RuleVm.New(Variants, Config.Rules.Select(r => r.Id)));
+        Changed();
+    }
+
+    private void Remove(RuleVm rule)
+    {
+        Config.Rules.Remove(rule);
+        Changed();
+    }
+
+    private void Move(int index, int offset)
+    {
+        Config.Move(index, offset);
+        Changed();
+    }
+
+    private void EndDrag() => (_dragIndex, _dropTarget) = (-1, -1);
+
+    /// <summary>Drag and drop (native HTML5): the dragged rule takes the place of the rule it is dropped on.</summary>
+    private void DropOn(int target)
+    {
+        var from = _dragIndex;
+        EndDrag();
+        if (!CanEdit || from < 0 || from >= Config.Rules.Count || target < 0 || target >= Config.Rules.Count || from == target)
+        {
+            return;
+        }
+
+        var rule = Config.Rules[from];
+        Config.Rules.RemoveAt(from);
+        Config.Rules.Insert(target, rule);
+        Changed();
+    }
+}

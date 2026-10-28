@@ -12,6 +12,9 @@ var server = builder.AddProject<Projects.Bunting_Server>("server")
     .WithEnvironment("Bunting__Management__Tokens__0__Name", "dev-owner")
     .WithEnvironment("Bunting__Management__Tokens__0__Token", "dev-owner-token")
     .WithEnvironment("Bunting__Management__Tokens__0__Role", "Owner")
+    // Development-only first administrator for the admin panel. Never use these values outside local Aspire runs.
+    .WithEnvironment("Bunting__Bootstrap__AdminEmail", "admin@bunting.local")
+    .WithEnvironment("Bunting__Bootstrap__AdminPassword", "dev-admin-password")
     .WithHttpHealthCheck("/health");
 
 builder.AddProject<Projects.Bunting_Admin>("admin")

@@ -1,0 +1,76 @@
+@page "/users"
+@inject IBuntingApi Api
+@inject CurrentUser User
+@inject UiGuard Guard
+@inject IDialogService Dialogs
+
+<PageTitle>Users · Bunting</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">Users</MudText>
+
+@if (_me is not null && !_me.IsInstanceAdmin)
+{
+    <MudAlert Severity="Severity.Warning" data-testid="read-only">Only instance administrators manage users.</MudAlert>
+}
+else if (_users is null)
+{
+    <MudProgressLinear Indeterminate="true" />
+}
+else
+{
+    <MudPaper Outlined="true" Class="pa-3 mb-4">
+        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap">
+            <MudTextField T="string" Label="Email" @bind-Value="_email" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" data-testid="user-email" />
+            <MudTextField T="string" Label="Password (min. 10 characters)" @bind-Value="_password" InputType="InputType.Password" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" />
+            <MudCheckBox T="bool" @bind-Value="_admin" Label="Instance administrator" />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Create" Disabled="@(string.IsNullOrWhiteSpace(_email) || string.IsNullOrEmpty(_password))" data-testid="create-user">Create user</MudButton>
+        </MudStack>
+    </MudPaper>
+    <MudTable T="UserInfo" Items="_users" Dense="true" Outlined="true" Elevation="0" data-testid="user-table">
+        <HeaderContent><MudTh>Email</MudTh><MudTh>Administrator</MudTh><MudTh></MudTh></HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Email</MudTd>
+            <MudTd>@(context.IsInstanceAdmin ? "yes" : "no")</MudTd>
+            <MudTd><MudButton Size="Size.Small" Color="Color.Error" OnClick="() => Delete(context)">Delete</MudButton></MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+@code {
+    private MeInfo? _me;
+    private List<UserInfo>? _users;
+    private string _email = string.Empty;
+    private string _password = string.Empty;
+    private bool _admin;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _me = await Guard.LoadAsync(() => User.GetAsync());
+        if (_me?.IsInstanceAdmin == true)
+        {
+            await Load();
+        }
+    }
+
+    private async Task Load() => _users = await Guard.LoadAsync(() => Api.GetUsersAsync()) ?? [];
+
+    private async Task Create()
+    {
+        if (await Guard.RunAsync(() => Api.CreateUserAsync(_email.Trim(), _password, _admin), "User created"))
+        {
+            _email = string.Empty;
+            _password = string.Empty;
+            _admin = false;
+            await Load();
+        }
+    }
+
+    private async Task Delete(UserInfo user)
+    {
+        var confirmed = await Dialogs.ShowMessageBoxAsync("Delete user?", $"{user.Email} can no longer sign in.", yesText: "Delete", cancelText: "Cancel");
+        if (confirmed == true && await Guard.RunAsync(() => Api.DeleteUserAsync(user.Id), "User deleted"))
+        {
+            await Load();
+        }
+    }
+}

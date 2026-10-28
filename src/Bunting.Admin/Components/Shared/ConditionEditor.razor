@@ -1,0 +1,72 @@
+@* Edits the AND-ed conditions of a rule or segment. *@
+
+<MudStack Spacing="2" data-testid="conditions">
+    @for (var i = 0; i < Conditions.Count; i++)
+    {
+        var condition = Conditions[i];
+        var index = i;
+        <MudStack Row="true" AlignItems="AlignItems.Start" Spacing="2" Wrap="Wrap.Wrap" data-testid="condition">
+            <MudTextField T="string" Label="Attribute" Value="condition.Attribute" ValueChanged="v => { condition.Attribute = v ?? string.Empty; Changed(); }"
+                          Disabled="@(!CanEdit)" Style="min-width: 10rem" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true"
+                          HelperText="@(condition.Operator == ConditionOperator.InSegment ? "Ignored for 'In segment'" : null)" />
+            <MudSelect T="ConditionOperator" Label="Operator" Value="condition.Operator" ValueChanged="v => { condition.Operator = v; Changed(); }"
+                       Disabled="@(!CanEdit)" Style="min-width: 12rem" Margin="Margin.Dense" Variant="Variant.Outlined">
+                @foreach (var op in Enum.GetValues<ConditionOperator>())
+                {
+                    <MudSelectItem Value="op">@Label(op)</MudSelectItem>
+                }
+            </MudSelect>
+            <MudTextField T="string" Label="@(condition.Operator == ConditionOperator.InSegment ? "Segment keys" : "Values")" Value="condition.ValuesText"
+                          ValueChanged="v => { condition.ValuesText = v ?? string.Empty; Changed(); }" Lines="1" MaxLines="4"
+                          Disabled="@(!CanEdit)" Style="min-width: 14rem" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true"
+                          HelperText="One per line or comma separated" />
+            <MudCheckBox T="bool" Label="Not" Value="condition.Negate" ValueChanged="v => { condition.Negate = v; Changed(); }" Disabled="@(!CanEdit)" />
+            @if (CanEdit)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="Remove condition" Size="Size.Small" OnClick="() => Remove(index)" />
+            }
+        </MudStack>
+    }
+    @if (CanEdit)
+    {
+        <div><MudButton Size="Size.Small" StartIcon="@Icons.Material.Filled.Add" OnClick="Add" data-testid="add-condition">Add condition</MudButton></div>
+    }
+</MudStack>
+
+@code {
+    [Parameter, EditorRequired]
+    public List<ConditionVm> Conditions { get; set; } = [];
+
+    [Parameter]
+    public bool CanEdit { get; set; } = true;
+
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
+
+    private static string Label(ConditionOperator op) => op switch
+    {
+        ConditionOperator.InSegment => "In segment",
+        ConditionOperator.SemVerGreaterThan => "SemVer >",
+        ConditionOperator.SemVerLessThan => "SemVer <",
+        ConditionOperator.SemVerEquals => "SemVer =",
+        ConditionOperator.GreaterThan => ">",
+        ConditionOperator.LessThan => "<",
+        ConditionOperator.StartsWith => "Starts with",
+        ConditionOperator.EndsWith => "Ends with",
+        _ => System.Text.RegularExpressions.Regex.Replace(op.ToString(), "(?<!^)([A-Z])", " $1"),
+    };
+
+    private void Changed() => OnChanged.InvokeAsync();
+
+    private void Add()
+    {
+        Conditions.Add(new ConditionVm());
+        Changed();
+    }
+
+    private void Remove(int index)
+    {
+        Conditions.RemoveAt(index);
+        Changed();
+    }
+}
