@@ -40,7 +40,7 @@ More in [docs/architecture.md](docs/architecture.md) and the [ADRs](docs/adr).
 You need Docker. For the Node and .NET samples also Node 18+ / the .NET 10 SDK.
 
 ```bash
-git clone https://github.com/furkancolak/bunting && cd bunting
+git clone https://github.com/0furkancolak/bunting && cd bunting
 docker compose up
 ```
 

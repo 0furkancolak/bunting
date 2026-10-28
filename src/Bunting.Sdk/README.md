@@ -1,6 +1,6 @@
 # Bunting.Sdk
 
-OpenFeature provider for [Bunting](https://github.com/furkancolak/bunting). Flags are evaluated locally from an in-memory
+OpenFeature provider for [Bunting](https://github.com/0furkancolak/bunting). Flags are evaluated locally from an in-memory
 ruleset that is kept up to date over Server-Sent Events, with polling as a fallback.
 
 ```csharp
