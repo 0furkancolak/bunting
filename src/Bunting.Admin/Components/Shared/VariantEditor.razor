@@ -5,7 +5,7 @@
         var index = i;
         <MudStack Row="true" Wrap="Wrap.Wrap" AlignItems="AlignItems.Start" Spacing="2" data-testid="variant">
             <MudTextField T="string" Label="Key" Value="row.Key" ValueChanged="v => { row.Key = v ?? string.Empty; Changed(); }" Disabled="@(!CanEdit || KeysLocked)"
-                          Margin="Margin.Dense" Variant="Variant.Outlined" Style="flex: 1 1 9rem; max-width: 14rem" Immediate="true" />
+                          Margin="Margin.Dense" Variant="Variant.Outlined" Style="width: 14rem; max-width: 100%" Immediate="true" />
             @if (Type == FlagType.Boolean)
             {
                 <MudSwitch T="bool" Label="@(IsTrue(row) ? "true" : "false")" Value="IsTrue(row)"
@@ -14,7 +14,7 @@
             else
             {
                 <MudTextField T="string" Label="@(Type == FlagType.Object ? "Value (JSON)" : "Value")" Value="row.ValueText" ValueChanged="v => { row.ValueText = v ?? string.Empty; Changed(); }"
-                              Disabled="@(!CanEdit)" Margin="Margin.Dense" Variant="Variant.Outlined" Style="flex: 1 1 12rem" Immediate="true" Lines="@(Type == FlagType.Object ? 3 : 1)"
+                              Disabled="@(!CanEdit)" Margin="Margin.Dense" Variant="Variant.Outlined" Style="flex: 1; min-width: 12rem; max-width: 100%" Immediate="true" Lines="@(Type == FlagType.Object ? 3 : 1)"
                               Error="@Errors.ContainsKey(index)" ErrorText="@(Errors.GetValueOrDefault(index))" />
             }
             @if (CanEdit && !KeysLocked && Rows.Count > 1)

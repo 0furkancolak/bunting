@@ -35,6 +35,16 @@ flowchart LR
 
 More in [docs/architecture.md](docs/architecture.md) and the [ADRs](docs/adr).
 
+## Screenshots
+
+| Flags and the per-environment kill switches | Flag detail with targeting rules |
+| --- | --- |
+| ![Flag list](docs/screenshots/flags.png) | ![Flag detail](docs/screenshots/flag-detail.png) |
+
+| Playground | Audit log | On a phone |
+| --- | --- | --- |
+| ![Playground](docs/screenshots/playground.png) | ![Audit log](docs/screenshots/audit-log.png) | ![Flag list on a phone](docs/screenshots/flags-mobile.png) |
+
 ## Quick start (5 minutes)
 
 You need Docker. For the Node and .NET samples also Node 18+ / the .NET 10 SDK.
