@@ -129,3 +129,40 @@ public sealed class Api(HttpClient http)
     public async Task<long> RulesetVersion(string project, string environment) =>
         (await Body(await Get($"/api/v1/projects/{project}/environments/{environment}"))).GetProperty("rulesetVersion").GetInt64();
 }
+
+public static class ApiExtensions
+{
+    public static async Task<(Guid Id, string Key)> NewKey(this Api api, string project, string environment, string type)
+    {
+        var response = await api.Post($"/api/v1/projects/{project}/environments/{environment}/api-keys", new { name = type + " key", type });
+        Assert.Equal(System.Net.HttpStatusCode.Created, response.StatusCode);
+        var body = await Api.Body(response);
+        return (body.GetProperty("id").GetGuid(), body.GetProperty("key").GetString()!);
+    }
+
+    public static HttpClient WithKey(this ServerFixture fixture, string key, bool bearer = false)
+    {
+        var http = fixture.Factory.CreateClient();
+        if (bearer)
+        {
+            http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", key);
+        }
+        else
+        {
+            http.DefaultRequestHeaders.Add("X-API-Key", key);
+        }
+
+        return http;
+    }
+
+    public static Task<HttpResponseMessage> Ofrep(this HttpClient http, string path, object context, string? ifNoneMatch = null)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, path) { Content = System.Net.Http.Json.JsonContent.Create(new { context }, options: Api.Json) };
+        if (ifNoneMatch is not null)
+        {
+            request.Headers.TryAddWithoutValidation("If-None-Match", ifNoneMatch);
+        }
+
+        return http.SendAsync(request);
+    }
+}
