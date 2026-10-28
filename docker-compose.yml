@@ -34,7 +34,7 @@ services:
       Bunting__Bootstrap__AdminEmail: ${BUNTING_ADMIN_EMAIL:-admin@bunting.local}
       Bunting__Bootstrap__AdminPassword: ${BUNTING_ADMIN_PASSWORD:-change-me-please}
     ports:
-      - "8080:8080"
+      - "${BUNTING_SERVER_PORT:-8080}:8080"
 
   admin:
     image: ${BUNTING_ADMIN_IMAGE:-bunting-admin}
@@ -51,7 +51,7 @@ services:
     volumes:
       - bunting-admin-keys:/keys
     ports:
-      - "8081:8080"
+      - "${BUNTING_ADMIN_PORT:-8081}:8080"
 
 volumes:
   bunting-pg:

@@ -7,7 +7,7 @@
 }
 else
 {
-    <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-2">
+    <MudStack Row="true" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Class="mb-2">
         <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" Href="@($"/p/{Project}")" aria-label="Back to flags" />
         <MudText Typo="Typo.h5" data-testid="flag-title">@_flag.Key</MudText>
         <MudChip T="string" Size="Size.Small">@_flag.Type</MudChip>
@@ -21,7 +21,7 @@ else
             <MudTextField T="string" Label="Tags" @bind-Value="_tags" Disabled="@(!Context.CanEdit)" Variant="Variant.Outlined" HelperText="Comma separated" />
             <MudText Typo="Typo.subtitle2">Variants</MudText>
             <VariantEditor Rows="_rows" Type="_flag.Type" CanEdit="Context.CanEdit" KeysLocked="true" Errors="_errors" />
-            <MudStack Row="true" Spacing="4">
+            <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="4">
                 <MudCheckBox T="bool" @bind-Value="_clientSide" Label="Available to client-side SDKs" Disabled="@(!Context.CanEdit)" />
                 <MudCheckBox T="bool" @bind-Value="_archived" Label="Archived" Disabled="@(!Context.CanEdit)" />
             </MudStack>

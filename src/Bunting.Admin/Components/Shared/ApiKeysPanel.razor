@@ -22,7 +22,7 @@ else
             </MudAlert>
         }
 
-        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+        <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="2" AlignItems="AlignItems.Center">
             <MudTextField T="string" Label="Name" @bind-Value="_name" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" data-testid="key-name" />
             <MudSelect T="ApiKeyType" Label="Type" @bind-Value="_type" Margin="Margin.Dense" Variant="Variant.Outlined" Style="min-width: 9rem" data-testid="key-type">
                 <MudSelectItem Value="ApiKeyType.Server">Server</MudSelectItem>
@@ -32,7 +32,7 @@ else
         </MudStack>
         <MudText Typo="Typo.caption">Server keys evaluate locally and see all rules — keep them secret. Client keys are safe in browsers and only see flags marked client-side.</MudText>
 
-        <MudTable T="ApiKeyInfo" Items="_keys" Dense="true" Outlined="true" Elevation="0" data-testid="key-table">
+        <MudTable Breakpoint="Breakpoint.None" T="ApiKeyInfo" Items="_keys" Dense="true" Outlined="true" Elevation="0" data-testid="key-table">
             <HeaderContent>
                 <MudTh>Name</MudTh><MudTh>Type</MudTh><MudTh>Key</MudTh><MudTh>Created</MudTh><MudTh></MudTh>
             </HeaderContent>

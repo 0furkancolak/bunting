@@ -16,18 +16,18 @@
         {
             @if (_me.IsInstanceAdmin)
             {
-                <MudButton Href="/users" Color="Color.Inherit" StartIcon="@Icons.Material.Filled.People">Users</MudButton>
+                <MudButton Href="/users" Color="Color.Inherit" StartIcon="@Icons.Material.Filled.People" Class="app-bar-users" aria-label="Users">Users</MudButton>
             }
-            <MudText Typo="Typo.body2" Class="mx-3" data-testid="current-user">@_me.Name</MudText>
+            <MudText Typo="Typo.body2" Class="mx-3 app-bar-user" data-testid="current-user">@_me.Name</MudText>
         }
         <MudIconButton Icon="@(_dark ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)" Color="Color.Inherit" OnClick="() => _dark = !_dark" aria-label="Toggle theme" />
         <form method="post" action="/account/logout">
             <AntiforgeryToken />
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Inherit" StartIcon="@Icons.Material.Filled.Logout">Sign out</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Inherit" StartIcon="@Icons.Material.Filled.Logout" Class="app-bar-signout" aria-label="Sign out">Sign out</MudButton>
         </form>
     </MudAppBar>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="my-4">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="my-4 px-3 px-sm-6">
             @Body
         </MudContainer>
     </MudMainContent>

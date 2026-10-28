@@ -22,7 +22,7 @@
             @foreach (var weight in Serve.Weights.Where(w => Variants.Contains(w.Variant)))
             {
                 var w = weight;
-                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudStack Row="true" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Spacing="2">
                     <MudText Style="width: 8rem" Class="text-truncate">@w.Variant</MudText>
                     <MudSlider T="double" Min="0" Max="100" Step="1" Value="w.Percent" ValueChanged="v => { w.Percent = v; Changed(); }"
                                Disabled="@(!CanEdit)" Style="min-width: 12rem; flex: 1" aria-label="@($"Weight of {w.Variant}")" />
@@ -34,7 +34,7 @@
             <MudText Color="@(Serve.IsValid ? Color.Success : Color.Error)" Typo="Typo.body2" data-testid="rollout-total">
                 Total: @Serve.TotalPercent.ToString("0.##")% @(Serve.IsValid ? string.Empty : "— must be exactly 100%")
             </MudText>
-            <MudStack Row="true" Spacing="2">
+            <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="2">
                 <MudTextField T="string" Label="Bucket by (attribute)" Value="Serve.BucketBy" ValueChanged="v => { Serve.BucketBy = v; Changed(); }"
                               Disabled="@(!CanEdit)" Placeholder="targetingKey" Margin="Margin.Dense" Variant="Variant.Outlined" />
                 <MudTextField T="string" Label="Salt" Value="Serve.Salt" ValueChanged="v => { Serve.Salt = v; Changed(); }"

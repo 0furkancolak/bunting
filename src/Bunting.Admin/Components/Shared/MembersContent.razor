@@ -13,7 +13,7 @@ else if (_members is null)
 else
 {
     <MudStack Spacing="2">
-        <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+        <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="2" AlignItems="AlignItems.Center">
             <MudTextField T="string" Label="User email" @bind-Value="_email" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" data-testid="member-email" />
             <MudSelect T="ProjectRole" Label="Role" @bind-Value="_role" Margin="Margin.Dense" Variant="Variant.Outlined" Style="min-width: 9rem">
                 @foreach (var role in Enum.GetValues<ProjectRole>())
@@ -23,7 +23,7 @@ else
             </MudSelect>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Add" Disabled="@string.IsNullOrWhiteSpace(_email)" data-testid="add-member">Add member</MudButton>
         </MudStack>
-        <MudTable T="MemberInfo" Items="_members" Dense="true" Outlined="true" Elevation="0" data-testid="member-table">
+        <MudTable Breakpoint="Breakpoint.None" T="MemberInfo" Items="_members" Dense="true" Outlined="true" Elevation="0" data-testid="member-table">
             <HeaderContent><MudTh>User</MudTh><MudTh>Role</MudTh><MudTh></MudTh></HeaderContent>
             <RowTemplate>
                 <MudTd>@context.Email</MudTd>

@@ -23,7 +23,7 @@ else
                     <MudTextField T="string" Label="Always excluded (targeting keys)" @bind-Value="_editing.Excluded" Lines="3" Variant="Variant.Outlined" HelperText="Excluded wins over included and conditions" Disabled="@(!Context.CanEdit)" />
                     <MudText Typo="Typo.subtitle2">Members by condition (all must match)</MudText>
                     <ConditionEditor Conditions="_editing.Conditions" CanEdit="Context.CanEdit" />
-                    <MudStack Row="true" Spacing="2">
+                    <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="2">
                         @if (Context.CanEdit)
                         {
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save" Disabled="@string.IsNullOrWhiteSpace(_editing.Key)" data-testid="save-segment">Save segment</MudButton>
@@ -34,7 +34,7 @@ else
             </MudPaper>
         }
 
-        <MudTable T="SegmentInfo" Items="_segments" Dense="true" Outlined="true" Elevation="0" data-testid="segment-table">
+        <MudTable Breakpoint="Breakpoint.None" T="SegmentInfo" Items="_segments" Dense="true" Outlined="true" Elevation="0" data-testid="segment-table">
             <HeaderContent>
                 <MudTh>Segment</MudTh>
                 <MudTh>Included</MudTh>

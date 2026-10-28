@@ -13,7 +13,7 @@
         <div @key="rule" data-testid="rule" @ondragover="() => _dropTarget = index" @ondragover:preventDefault="true" @ondrop="() => DropOn(index)" @ondrop:preventDefault="true">
         <MudPaper Outlined="true" Class="@(_dropTarget == index && _dragIndex != index ? "pa-3 mud-border-primary" : "pa-3")">
             <MudStack Spacing="2">
-                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudStack Row="true" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Spacing="2">
                     @if (CanEdit)
                     {
                         <span draggable="true" @ondragstart="() => _dragIndex = index" @ondragend="EndDrag" title="Drag to reorder" aria-label="Drag to reorder" data-testid="rule-handle" style="cursor: grab; display: inline-flex">

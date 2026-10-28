@@ -17,7 +17,7 @@ else
     @if (_me?.IsInstanceAdmin == true)
     {
         <MudPaper Class="pa-3 mb-4" Outlined="true" data-testid="new-project">
-            <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+            <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="2" AlignItems="AlignItems.Center">
                 <MudTextField T="string" Label="Key" @bind-Value="_key" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" HelperText="lowercase letters, digits, dashes" />
                 <MudTextField T="string" Label="Name" @bind-Value="_name" Margin="Margin.Dense" Variant="Variant.Outlined" Immediate="true" />
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Create" Disabled="@(string.IsNullOrWhiteSpace(_key) || string.IsNullOrWhiteSpace(_name))">Create project</MudButton>

@@ -26,7 +26,7 @@ else
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Create" Disabled="@(string.IsNullOrWhiteSpace(_email) || string.IsNullOrEmpty(_password))" data-testid="create-user">Create user</MudButton>
         </MudStack>
     </MudPaper>
-    <MudTable T="UserInfo" Items="_users" Dense="true" Outlined="true" Elevation="0" data-testid="user-table">
+    <MudTable Breakpoint="Breakpoint.None" T="UserInfo" Items="_users" Dense="true" Outlined="true" Elevation="0" data-testid="user-table">
         <HeaderContent><MudTh>Email</MudTh><MudTh>Administrator</MudTh><MudTh></MudTh></HeaderContent>
         <RowTemplate>
             <MudTd>@context.Email</MudTd>

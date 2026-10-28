@@ -27,7 +27,7 @@
         @if (_response is not null)
         {
             <MudText Typo="Typo.caption" Class="mb-1">Ruleset version @_response.RulesetVersion</MudText>
-            <MudTable T="PlaygroundResult" Items="_response.Results" Dense="true" Outlined="true" Elevation="0" data-testid="playground-results">
+            <MudTable Breakpoint="Breakpoint.None" T="PlaygroundResult" Items="_response.Results" Dense="true" Outlined="true" Elevation="0" data-testid="playground-results">
                 <HeaderContent>
                     <MudTh>Flag</MudTh>
                     <MudTh>Value</MudTh>

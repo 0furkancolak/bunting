@@ -10,7 +10,7 @@ else
 {
     var variants = Flag.Variants.Keys.ToList();
     <MudStack Spacing="3" data-testid="environment-editor">
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+        <MudStack Row="true" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Spacing="3">
             <MudSwitch T="bool" Value="_config.Enabled" ValueChanged="v => { _config.Enabled = v; }" Color="Color.Success" Disabled="@(!Context.CanEdit)"
                        Label="@(_config.Enabled ? "Enabled" : "Disabled (serves the off variant)")" data-testid="enabled" />
             <MudSelect T="string" Label="Off variant" Value="_config.OffVariant" ValueChanged="v => { _config.OffVariant = v ?? string.Empty; }" Disabled="@(!Context.CanEdit)"

@@ -12,14 +12,14 @@ else if (_context is null)
 }
 else
 {
-    <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-2">
+    <MudStack Row="true" Wrap="Wrap.Wrap" AlignItems="AlignItems.Center" Class="mb-2">
         <MudText Typo="Typo.h4" data-testid="project-name">@_context.Project.Name</MudText>
         <MudChip T="string" Size="Size.Small" data-testid="project-role">@(_context.Role?.ToString() ?? "No role")</MudChip>
     </MudStack>
-    <MudStack Row="true" Spacing="1" Class="mb-4" data-testid="project-nav">
+    <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="1" Class="mb-4" data-testid="project-nav">
         @foreach (var (key, label, href) in Sections())
         {
-            <MudButton Href="@href" Variant="@(Section == key ? Variant.Filled : Variant.Text)" Color="Color.Primary" Size="Size.Small">@label</MudButton>
+            <MudButton Href="@href" Variant="@(Section == key ? Variant.Filled : Variant.Text)" Color="Color.Primary" Size="Size.Small" Class="flex-shrink-0 text-nowrap">@label</MudButton>
         }
     </MudStack>
     <CascadingValue Value="_context">

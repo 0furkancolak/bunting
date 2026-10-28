@@ -47,3 +47,20 @@ h1:focus {
 .diff-line { font-family: ui-monospace, monospace; font-size: .8rem; white-space: pre; padding: 0 .5rem; }
 .diff-added { background: rgba(46, 160, 67, .2); }
 .diff-removed { background: rgba(248, 81, 73, .2); }
+
+/* Responsive layout */
+.project-nav { overflow-x: auto; scrollbar-width: thin; padding-bottom: .25rem; }
+.mud-input-control { max-width: 100%; }
+.mud-table-container { overflow-x: auto; }
+.mud-table-root th, .mud-table-root td { white-space: nowrap; }
+.mud-table-root td .mud-text { white-space: normal; }
+.mud-appbar .mud-toolbar { gap: .25rem; min-width: 0; }
+.app-bar-user { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+@media (max-width: 600px) {
+    .app-bar-user { display: none; }
+    .app-bar-users .mud-button-label, .app-bar-signout .mud-button-label { font-size: 0; }
+    .app-bar-users .mud-button-icon-start, .app-bar-signout .mud-button-icon-start { margin: 0; }
+    .app-bar-users, .app-bar-signout { min-width: 0; padding: 6px 8px; }
+    .mud-typography-h4 { font-size: 1.6rem; }
+}
