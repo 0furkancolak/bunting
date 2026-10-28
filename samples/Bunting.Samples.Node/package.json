@@ -1,0 +1,11 @@
+{
+  "name": "bunting-sample-node",
+  "private": true,
+  "type": "module",
+  "description": "Evaluates Bunting flags from Node with the standard OpenFeature SDK and the OFREP provider.",
+  "scripts": { "start": "node index.mjs" },
+  "dependencies": {
+    "@openfeature/ofrep-provider": "0.2.5",
+    "@openfeature/server-sdk": "1.23.0"
+  }
+}

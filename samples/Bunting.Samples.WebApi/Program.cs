@@ -15,20 +15,22 @@ builder.Services.AddOpenFeature(feature => feature.AddBuntingProvider(options =>
 
 var app = builder.Build();
 
-app.MapGet("/", async (IFeatureClient flags, string? user) =>
+app.MapGet("/", async (IFeatureClient flags, string? user, string? plan) =>
 {
     var context = EvaluationContext.Builder()
         .SetTargetingKey(user ?? "anonymous")
+        .Set("plan", plan ?? "free")
         .Build();
 
-    var newGreeting = await flags.GetBooleanValueAsync("new-greeting", false, context);
-    return newGreeting ? $"Welcome back, {user ?? "friend"}! (new greeting)" : "Hello.";
+    var newCheckout = await flags.GetBooleanValueAsync("new-checkout", false, context);
+    var banner = await flags.GetStringValueAsync("banner-text", "Hello", context);
+    return $"{banner} — {(newCheckout ? "new checkout" : "classic checkout")} for {user ?? "anonymous"}";
 });
 
-app.MapGet("/details", async (IFeatureClient flags, string? user) =>
+app.MapGet("/details", async (IFeatureClient flags, string? user, string? plan) =>
 {
-    var context = EvaluationContext.Builder().SetTargetingKey(user ?? "anonymous").Build();
-    var details = await flags.GetBooleanDetailsAsync("new-greeting", false, context);
+    var context = EvaluationContext.Builder().SetTargetingKey(user ?? "anonymous").Set("plan", plan ?? "free").Build();
+    var details = await flags.GetBooleanDetailsAsync("new-checkout", false, context);
     return Results.Ok(new { details.Value, details.Variant, details.Reason, error = details.ErrorType.ToString() });
 });
 
