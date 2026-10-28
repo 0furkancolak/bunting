@@ -1,0 +1,13 @@
+bin/
+obj/
+.vs/
+.idea/
+*.user
+*.suo
+TestResults/
+BenchmarkDotNet.Artifacts/
+artifacts/
+node_modules/
+.DS_Store
+*.snupkg
+*.nupkg

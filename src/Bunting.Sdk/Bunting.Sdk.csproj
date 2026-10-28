@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Bunting.Evaluation\Bunting.Evaluation.csproj" />
+  </ItemGroup>
+</Project>

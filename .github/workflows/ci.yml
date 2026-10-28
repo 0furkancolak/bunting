@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Restore
+        run: dotnet restore Bunting.sln
+      - name: Format check
+        run: dotnet format Bunting.sln --verify-no-changes --no-restore
+      - name: Build
+        run: dotnet build Bunting.sln -c Release --no-restore
+      - name: Test
+        run: dotnet test --solution Bunting.sln -c Release --no-build
