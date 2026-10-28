@@ -1,0 +1,58 @@
+# One command self-host:  docker compose up
+#   Admin panel  http://localhost:8081   (sign in with BUNTING_ADMIN_EMAIL / BUNTING_ADMIN_PASSWORD)
+#   Server API   http://localhost:8080   (Management API, OFREP, SDK endpoints)
+# Copy .env.example to .env to change the defaults. Change the admin password before exposing this anywhere.
+name: bunting
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: bunting
+      POSTGRES_USER: bunting
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bunting}
+    volumes:
+      - bunting-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bunting -d bunting"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  server:
+    image: ${BUNTING_SERVER_IMAGE:-bunting-server}
+    build:
+      context: .
+      dockerfile: src/Bunting.Server/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__bunting: Host=postgres;Database=bunting;Username=bunting;Password=${POSTGRES_PASSWORD:-bunting}
+      Bunting__Bootstrap__AdminEmail: ${BUNTING_ADMIN_EMAIL:-admin@bunting.local}
+      Bunting__Bootstrap__AdminPassword: ${BUNTING_ADMIN_PASSWORD:-change-me-please}
+    ports:
+      - "8080:8080"
+
+  admin:
+    image: ${BUNTING_ADMIN_IMAGE:-bunting-admin}
+    build:
+      context: .
+      dockerfile: src/Bunting.Admin/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      server:
+        condition: service_healthy
+    environment:
+      Bunting__ServerUrl: http://server:8080
+      Bunting__DataProtectionPath: /keys
+    volumes:
+      - bunting-admin-keys:/keys
+    ports:
+      - "8081:8080"
+
+volumes:
+  bunting-pg:
+  bunting-admin-keys:

@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+**/node_modules/
+.git/
+.github/
+tests/
+samples/
+load/
+docs/
+TestResults/
+artifacts/
+*.md
+!src/**/README.md

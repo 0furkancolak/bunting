@@ -3,6 +3,7 @@ using Bunting.Admin.Components;
 using Bunting.Admin.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using MudBlazor.Services;
 
@@ -12,6 +13,13 @@ builder.AddServiceDefaults();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddMudServices();
 builder.Services.AddCascadingAuthenticationState();
+
+// In a container the default key ring would be lost on restart and sign everyone out; keep it on a volume.
+if (builder.Configuration["Bunting:DataProtectionPath"] is { Length: > 0 } keyPath)
+{
+    builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(keyPath)).SetApplicationName("Bunting.Admin");
+}
+
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
