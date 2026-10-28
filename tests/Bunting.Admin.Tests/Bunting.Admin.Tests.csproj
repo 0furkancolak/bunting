@@ -5,12 +5,18 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="bunit" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Testcontainers.PostgreSql" />
     <PackageReference Include="xunit.v3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bunting.Admin\Bunting.Admin.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\ServerProcess.cs" Link="Shared\ServerProcess.cs" />
     <Using Include="Xunit" />
+    <Using Include="Bunit" />
+    <Using Include="Bunting.Tests.Common" />
   </ItemGroup>
 </Project>

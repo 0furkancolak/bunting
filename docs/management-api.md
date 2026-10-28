@@ -1,11 +1,17 @@
 # Management API
 
 Base path `/api/v1`, `Authorization: Bearer <token>`, errors as RFC 9457 `application/problem+json`.
-Roles: **Viewer** (read) < **Editor** (flags, configs, segments) < **Owner** (projects, environments).
+Roles: **Viewer** (read) < **Editor** (flags, configs, segments) < **Owner** (environments, API keys, members).
+The token is either a static token from configuration (one role everywhere) or a user token from `POST /auth/login`; users hold a role per project
+(see [ADR 0013](adr/0013-identity-and-project-roles.md)). Creating projects and managing users needs an instance administrator.
 
 | Method & path | Role | Notes |
 |---|---|---|
-| `GET/POST /projects`, `GET/PATCH/DELETE /projects/{p}` | V / O | new projects get `development`, `staging`, `production` |
+| `POST /auth/login` | – | `{email,password}` → bearer token; `GET /auth/me` returns name, admin flag and memberships |
+| `GET/POST /users`, `DELETE /users/{id}` | admin | instance administrators only |
+| `GET/POST /projects/{p}/members`, `PUT/DELETE …/{userId}` | O | members of a project; audited |
+| `POST /projects/{p}/environments/{e}/evaluate` | V | playground: `{flagKey?, context}` → value, variant, reason, rule id per flag |
+| `GET/POST /projects`, `GET/PATCH/DELETE /projects/{p}` | V / admin (create) / O | listing shows only the caller's projects; new projects get `development`, `staging`, `production` |
 | `GET/POST /projects/{p}/environments`, `GET/PATCH/DELETE …/{e}` | V / O | new environments get a disabled config per flag |
 | `GET /projects/{p}/flags?search=&tag=&archived=` | V | includes per-environment enabled state |
 | `POST /projects/{p}/flags` | E | creates a disabled config in every environment |

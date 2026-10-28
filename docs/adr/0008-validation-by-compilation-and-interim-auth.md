@@ -19,4 +19,4 @@ the server would create two sources of truth.
 ## Consequences
 - Server and SDK can never disagree about what a valid configuration is.
 - Warnings that the SDK would tolerate (e.g. an invalid regex) are rejected at write time, which is stricter and safer.
-- Roles are global per token until Identity memberships exist.
+- Roles are global per token until Identity memberships exist (superseded by [ADR 0013](0013-identity-and-project-roles.md)).
