@@ -1,6 +1,10 @@
 using System.Text.Json;
 using Bunting.Domain;
+using Bunting.Server.Features.Identity;
 using Bunting.Server.Infrastructure;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -8,8 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Bunting.Server.Data;
 
-public sealed class BuntingDbContext(DbContextOptions<BuntingDbContext> options) : DbContext(options)
+public sealed class BuntingDbContext(DbContextOptions<BuntingDbContext> options)
+    : IdentityUserContext<BuntingUser>(options), IDataProtectionKeyContext
 {
+    public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
+    public DbSet<DataProtectionKey> DataProtectionKeys => Set<DataProtectionKey>();
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<ProjectEnvironment> Environments => Set<ProjectEnvironment>();
     public DbSet<Flag> Flags => Set<Flag>();
@@ -18,9 +25,26 @@ public sealed class BuntingDbContext(DbContextOptions<BuntingDbContext> options)
     public DbSet<ApiKey> ApiKeys => Set<ApiKey>();
     public DbSet<AuditEntry> AuditEntries => Set<AuditEntry>();
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        modelBuilder.Entity<Project>(e =>
+        base.OnModelCreating(builder);
+        builder.Entity<BuntingUser>().ToTable("users");
+        builder.Entity<IdentityUserClaim<string>>().ToTable("user_claims");
+        builder.Entity<IdentityUserLogin<string>>().ToTable("user_logins");
+        builder.Entity<IdentityUserToken<string>>().ToTable("user_tokens");
+        builder.Entity<DataProtectionKey>().ToTable("data_protection_keys");
+
+        builder.Entity<ProjectMember>(e =>
+        {
+            e.ToTable("project_members");
+            e.HasKey(x => new { x.ProjectId, x.UserId });
+            e.Property(x => x.UserId).HasMaxLength(450);
+            e.Property(x => x.Role).HasConversion<string>().HasMaxLength(16);
+            e.HasOne<Project>().WithMany().HasForeignKey(x => x.ProjectId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne<BuntingUser>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<Project>(e =>
         {
             e.ToTable("projects");
             e.HasKey(x => x.Id);
@@ -29,7 +53,7 @@ public sealed class BuntingDbContext(DbContextOptions<BuntingDbContext> options)
             e.HasIndex(x => x.Key).IsUnique();
         });
 
-        modelBuilder.Entity<ProjectEnvironment>(e =>
+        builder.Entity<ProjectEnvironment>(e =>
         {
             e.ToTable("environments");
             e.HasKey(x => x.Id);
@@ -39,7 +63,7 @@ public sealed class BuntingDbContext(DbContextOptions<BuntingDbContext> options)
             e.HasIndex(x => new { x.ProjectId, x.Key }).IsUnique();
         });
 
-        modelBuilder.Entity<Flag>(e =>
+        builder.Entity<Flag>(e =>
         {
             e.ToTable("flags");
             e.HasKey(x => x.Id);
@@ -54,7 +78,7 @@ public sealed class BuntingDbContext(DbContextOptions<BuntingDbContext> options)
             e.HasIndex(x => new { x.ProjectId, x.Key }).IsUnique();
         });
 
-        modelBuilder.Entity<FlagEnvironmentConfig>(e =>
+        builder.Entity<FlagEnvironmentConfig>(e =>
         {
             e.ToTable("flag_environment_configs");
             e.HasKey(x => new { x.FlagId, x.EnvironmentId });
@@ -67,7 +91,7 @@ public sealed class BuntingDbContext(DbContextOptions<BuntingDbContext> options)
             e.HasIndex(x => x.EnvironmentId);
         });
 
-        modelBuilder.Entity<Segment>(e =>
+        builder.Entity<Segment>(e =>
         {
             e.ToTable("segments");
             e.HasKey(x => x.Id);
@@ -80,7 +104,7 @@ public sealed class BuntingDbContext(DbContextOptions<BuntingDbContext> options)
             e.HasIndex(x => new { x.EnvironmentId, x.Key }).IsUnique();
         });
 
-        modelBuilder.Entity<ApiKey>(e =>
+        builder.Entity<ApiKey>(e =>
         {
             e.ToTable("api_keys");
             e.HasKey(x => x.Id);
@@ -91,7 +115,7 @@ public sealed class BuntingDbContext(DbContextOptions<BuntingDbContext> options)
             e.HasIndex(x => x.KeyHash).IsUnique();
         });
 
-        modelBuilder.Entity<AuditEntry>(e =>
+        builder.Entity<AuditEntry>(e =>
         {
             e.ToTable("audit_entries");
             e.HasKey(x => x.Id);

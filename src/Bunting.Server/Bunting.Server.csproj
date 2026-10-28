@@ -4,6 +4,8 @@
     <ProjectReference Include="..\Bunting.Evaluation\Bunting.Evaluation.csproj" />
     <ProjectReference Include="..\Bunting.ServiceDefaults\Bunting.ServiceDefaults.csproj" />
     <PackageReference Include="Aspire.Npgsql" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>

@@ -32,9 +32,16 @@ public static class ProjectEndpoints
     private static ProjectDto ToDto(Project p, IEnumerable<ProjectEnvironment> envs) =>
         new(p.Id, p.Key, p.Name, [.. envs.OrderBy(e => e.Position).Select(ToDto)]);
 
-    private static async Task<IResult> List(BuntingDbContext db, CancellationToken ct)
+    private static async Task<IResult> List(HttpContext http, BuntingDbContext db, CancellationToken ct)
     {
-        var projects = await db.Projects.AsNoTracking().OrderBy(p => p.Key).ToListAsync(ct);
+        var query = db.Projects.AsNoTracking();
+        if (!http.User.IsGlobal())
+        {
+            var userId = http.User.UserId();
+            query = query.Where(p => db.ProjectMembers.Any(m => m.ProjectId == p.Id && m.UserId == userId));
+        }
+
+        var projects = await query.OrderBy(p => p.Key).ToListAsync(ct);
         var envs = await db.Environments.AsNoTracking().ToListAsync(ct);
         return Results.Ok(projects.Select(p => ToDto(p, envs.Where(e => e.ProjectId == p.Id))));
     }

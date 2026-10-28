@@ -5,9 +5,9 @@ namespace Bunting.Server.Tests;
 [Collection("server")]
 public class AuthorizationTests(ServerFixture fixture)
 {
-    private sealed record Endpoint(string Name, HttpMethod Method, Func<string, string> Url, Func<object?> Body, string RequiredRole, bool NeedsIfMatch = false);
+    internal sealed record Endpoint(string Name, HttpMethod Method, Func<string, string> Url, Func<object?> Body, string RequiredRole, bool NeedsIfMatch = false);
 
-    private static readonly Endpoint[] Endpoints =
+    internal static readonly Endpoint[] Endpoints =
     [
         new("list projects", HttpMethod.Get, _ => "/api/v1/projects", () => null, "Viewer"),
         new("get project", HttpMethod.Get, p => $"/api/v1/projects/{p}", () => null, "Viewer"),

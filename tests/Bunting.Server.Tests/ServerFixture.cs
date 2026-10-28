@@ -13,6 +13,10 @@ public sealed class ServerFixture : IAsyncLifetime
     public const string EditorToken = "test-editor-token";
     public const string ViewerToken = "test-viewer-token";
 
+    public const string BootstrapEmail = "root@bunting.test";
+    public const string BootstrapPassword = "bootstrap-password-1";
+    public const string UserPassword = "correct-horse-battery";
+
     private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:17-alpine").Build();
     private WebApplicationFactory<Program>? _factory;
 
@@ -27,6 +31,8 @@ public sealed class ServerFixture : IAsyncLifetime
         // Environment variables are read by WebApplication.CreateBuilder before Program continues, unlike late test overrides.
         Environment.SetEnvironmentVariable("ConnectionStrings__bunting", _postgres.GetConnectionString());
         Environment.SetEnvironmentVariable("Logging__LogLevel__Default", "Warning");
+        Environment.SetEnvironmentVariable("Bunting__Bootstrap__AdminEmail", BootstrapEmail);
+        Environment.SetEnvironmentVariable("Bunting__Bootstrap__AdminPassword", BootstrapPassword);
         string[] roles = ["Owner", "Editor", "Viewer"];
         string[] tokens = [OwnerToken, EditorToken, ViewerToken];
         for (var i = 0; i < roles.Length; i++)
@@ -48,6 +54,34 @@ public sealed class ServerFixture : IAsyncLifetime
         }
 
         await _postgres.DisposeAsync();
+    }
+
+    /// <summary>Logs in with email and password and returns a client carrying the issued bearer token.</summary>
+    public async Task<Api> LoginAsync(string email, string password)
+    {
+        var anonymous = Factory.CreateClient();
+        var response = await anonymous.PostAsJsonAsync("/api/v1/auth/login", new { email, password });
+        response.EnsureSuccessStatusCode();
+        var token = (await response.Content.ReadFromJsonAsync<JsonElement>()).GetProperty("accessToken").GetString()!;
+        return Client(token);
+    }
+
+    /// <summary>Creates a user (via the static owner token) and returns its email and id.</summary>
+    public async Task<(string Email, string Id)> NewUser(bool admin = false)
+    {
+        var email = $"user-{Guid.NewGuid():N}"[..20] + "@bunting.test";
+        var response = await Client().Post("/api/v1/users", new { email, password = UserPassword, isInstanceAdmin = admin });
+        Assert.Equal(System.Net.HttpStatusCode.Created, response.StatusCode);
+        return (email, (await Api.Body(response)).GetProperty("id").GetString()!);
+    }
+
+    /// <summary>Creates a user, makes it a member of <paramref name="project"/> with <paramref name="role"/> and logs it in.</summary>
+    public async Task<Api> MemberClient(string project, string role)
+    {
+        var (email, _) = await NewUser();
+        var add = await Client().Post($"/api/v1/projects/{project}/members", new { email, role });
+        Assert.Equal(System.Net.HttpStatusCode.Created, add.StatusCode);
+        return await LoginAsync(email, UserPassword);
     }
 
     public Api Client(string token = OwnerToken)

@@ -9,6 +9,14 @@ public sealed class Project
     public required string Name { get; set; }
 }
 
+/// <summary>Grants a user a role within one project. The user id refers to the identity store of the server.</summary>
+public sealed class ProjectMember
+{
+    public Guid ProjectId { get; set; }
+    public required string UserId { get; set; }
+    public ProjectRole Role { get; set; }
+}
+
 public sealed class ProjectEnvironment
 {
     public Guid Id { get; set; }
