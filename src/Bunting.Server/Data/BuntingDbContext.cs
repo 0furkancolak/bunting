@@ -87,6 +87,7 @@ public sealed class BuntingDbContext(DbContextOptions<BuntingDbContext> options)
             e.Property(x => x.Type).HasConversion<string>().HasMaxLength(16);
             e.Property(x => x.Name).HasMaxLength(200);
             e.HasOne<ProjectEnvironment>().WithMany().HasForeignKey(x => x.EnvironmentId).OnDelete(DeleteBehavior.Cascade);
+            e.Property(x => x.Hint).HasMaxLength(16);
             e.HasIndex(x => x.KeyHash).IsUnique();
         });
 

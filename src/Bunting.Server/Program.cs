@@ -1,8 +1,10 @@
 using Bunting.Server.Data;
+using Bunting.Server.Features.ApiKeys;
 using Bunting.Server.Features.Audit;
 using Bunting.Server.Features.Environments;
 using Bunting.Server.Features.FlagConfigs;
 using Bunting.Server.Features.Flags;
+using Bunting.Server.Features.Ofrep;
 using Bunting.Server.Features.Projects;
 using Bunting.Server.Features.Rulesets;
 using Bunting.Server.Infrastructure;
@@ -16,7 +18,11 @@ builder.Services.AddDbContext<BuntingDbContext>((sp, options) => options.UseNpgs
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ChangeLog>();
 builder.Services.AddScoped<RulesetSnapshotBuilder>();
+builder.Services.AddSingleton<RulesetCache>();
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.Configure<OfrepOptions>(builder.Configuration.GetSection("Bunting:Ofrep"));
 builder.Services.AddManagementAuth(builder.Configuration);
+builder.Services.AddApiKeyAuth(builder.Configuration);
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
@@ -30,6 +36,7 @@ if (app.Configuration.GetValue("Bunting:Database:AutoMigrate", true))
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseAuthentication();
+app.UseRateLimiter();
 app.UseAuthorization();
 
 app.MapGet("/", () => Results.Ok(new { name = "Bunting", status = "ok" }));
@@ -42,6 +49,8 @@ FlagEndpoints.Map(api);
 FlagConfigEndpoints.Map(api);
 Bunting.Server.Features.Segments.SegmentEndpoints.Map(api);
 AuditEndpoints.Map(api);
+ApiKeyEndpoints.Map(api);
+OfrepEndpoints.Map(app);
 
 app.Run();
 

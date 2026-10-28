@@ -10,9 +10,11 @@ namespace Bunting.Server.Infrastructure;
 /// its <see cref="AuditEntry"/>, the environment ruleset version bump(s) and the
 /// <c>NOTIFY bunting_ruleset_changed</c> (delivered by Postgres only if the transaction commits).
 /// </summary>
-public sealed class ChangeLog(BuntingDbContext db, IHttpContextAccessor http)
+public sealed class ChangeLog(BuntingDbContext db, IHttpContextAccessor http, Features.Rulesets.RulesetCache rulesets)
 {
     public const string NotifyChannel = "bunting_ruleset_changed";
+
+    private readonly List<Action> _afterCommit = [];
 
     public string Actor => http.HttpContext?.User.Identity?.Name ?? "system";
 
@@ -25,6 +27,7 @@ public sealed class ChangeLog(BuntingDbContext db, IHttpContextAccessor http)
             var result = await body();
             await db.SaveChangesAsync(ct);
             await tx.CommitAsync(ct);
+            RunAfterCommit();
             return result;
         }
         catch (ApiException e)
@@ -42,6 +45,19 @@ public sealed class ChangeLog(BuntingDbContext db, IHttpContextAccessor http)
             await tx.RollbackAsync(ct);
             return Problems.Conflict("A resource with the same key already exists.");
         }
+    }
+
+    /// <summary>Registers in-process work (cache invalidation) to run only after the transaction committed.</summary>
+    public void AfterCommit(Action action) => _afterCommit.Add(action);
+
+    private void RunAfterCommit()
+    {
+        foreach (var action in _afterCommit)
+        {
+            action();
+        }
+
+        _afterCommit.Clear();
     }
 
     public void Audit(Guid projectId, Guid? environmentId, string entityType, string entityId, string action, object? before, object? after) =>
@@ -67,6 +83,7 @@ public sealed class ChangeLog(BuntingDbContext db, IHttpContextAccessor http)
         var version = (await db.Database
             .SqlQuery<long>($"UPDATE environments SET \"RulesetVersion\" = \"RulesetVersion\" + 1 WHERE \"Id\" = {environmentId} RETURNING \"RulesetVersion\" AS \"Value\"")
             .ToListAsync(ct)).Single();
+        AfterCommit(() => rulesets.Invalidate(environmentId));
         var payload = $"{environmentId}:{version}";
         await db.Database.ExecuteSqlAsync($"SELECT pg_notify({NotifyChannel}, {payload})", ct);
         return version;

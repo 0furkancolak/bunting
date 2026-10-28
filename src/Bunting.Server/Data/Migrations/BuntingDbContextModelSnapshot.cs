@@ -34,6 +34,11 @@ namespace Bunting.Server.Data.Migrations
                     b.Property<Guid>("EnvironmentId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Hint")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
                     b.Property<byte[]>("KeyHash")
                         .IsRequired()
                         .HasColumnType("bytea");
