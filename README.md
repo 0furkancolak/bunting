@@ -16,6 +16,18 @@ conditions on missing attributes never match.
 Benchmarks (Apple M4, .NET 10): a 20-rule flag evaluates in **< 1 µs with zero allocations**
 ([details](docs/benchmarks.md)).
 
+## OFREP
+
+Bunting speaks [OFREP](https://openfeature.dev/docs/reference/other-technologies/ofrep/) (`docs/ofrep-openapi.yaml`), so the
+standard OpenFeature providers work in any language without a Bunting-specific client:
+
+```js
+OpenFeature.setProvider(new OFREPProvider({ baseUrl: 'https://flags.example.com', headers: [['X-API-Key', 'bnt_srv_…']] }));
+```
+
+Server keys evaluate everything; client keys (`bnt_cli_…`) only see flags marked client-side and never receive rules.
+Conformance is tested against the official JS providers in `tests/Bunting.Server.OfrepConformance`.
+
 ## Run locally
 
 ```bash
