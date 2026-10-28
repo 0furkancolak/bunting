@@ -17,11 +17,13 @@ public sealed class ServerProcess : IAsyncDisposable
 
     public string BaseUrl { get; }
 
+    public static int FreeTcpPort() => FreePort();
+
     public static string RepoRoot { get; } = FindRepoRoot();
 
-    public static async Task<ServerProcess> StartAsync(string connectionString, string adminToken, IReadOnlyDictionary<string, string>? extraEnvironment = null)
+    public static async Task<ServerProcess> StartAsync(string connectionString, string adminToken, IReadOnlyDictionary<string, string>? extraEnvironment = null, int? port = null)
     {
-        var baseUrl = $"http://127.0.0.1:{FreePort()}";
+        var baseUrl = $"http://127.0.0.1:{port ?? FreePort()}";
         var configuration = AppContext.BaseDirectory.Contains($"{Path.DirectorySeparatorChar}Release{Path.DirectorySeparatorChar}") ? "Release" : "Debug";
         var dll = Path.Combine(RepoRoot, "src", "Bunting.Server", "bin", configuration, "net10.0", "Bunting.Server.dll");
 
