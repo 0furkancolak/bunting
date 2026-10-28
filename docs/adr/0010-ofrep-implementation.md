@@ -24,11 +24,11 @@ embedded in browsers and apps and must reveal nothing beyond the evaluated value
 - Compiled rulesets are cached per environment (`RulesetCache`), invalidated right after local commits and re-checked every
   30 s; cross-instance push comes with LISTEN/NOTIFY in the real-time phase.
 
-## Known deviation to confirm
+## Deliberate deviation from the OFREP schema (confirmed)
 The OFREP schema lists the success reasons `STATIC, TARGETING_MATCH, SPLIT, DISABLED, UNKNOWN`, but OpenFeature (and our
 engine, as required) also defines `DEFAULT` for the fallthrough. We emit `DEFAULT` unchanged; the official JS providers accept it
-(see conformance tests). If strict schema validation matters more than information, the mapping is a single line in
-`OfrepEndpoints.Map`.
+(see conformance tests). The maintainer confirmed keeping `DEFAULT`: it preserves the OpenFeature semantics ("no rule matched") that `STATIC` would lose.
+If a strict schema validator ever matters more, the mapping is a single line in `OfrepEndpoints.Map`.
 
 ## Consequences
 Official OFREP providers work unmodified. Conformance is verified by `Bunting.Server.OfrepConformance`, which drives a real
