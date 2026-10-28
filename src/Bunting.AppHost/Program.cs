@@ -1,6 +1,8 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgres = builder.AddPostgres("postgres")
+// A fixed development password: with a random one, the persisted data volume rejects the next run's credentials.
+var postgresPassword = builder.AddParameter("postgres-password", "bunting-dev-postgres", publishValueAsDefault: false, secret: true);
+var postgres = builder.AddPostgres("postgres", password: postgresPassword)
     .WithDataVolume("bunting-pg-data")
     .WithPgAdmin();
 var db = postgres.AddDatabase("bunting");
