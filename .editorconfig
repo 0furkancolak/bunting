@@ -33,6 +33,9 @@ dotnet_naming_symbols.private_fields.applicable_accessibilities = private
 dotnet_naming_style.underscore_camel.required_prefix = _
 dotnet_naming_style.underscore_camel.capitalization = camel_case
 
+# FlagType.String/Integer/Double/Object are the specified domain vocabulary.
+dotnet_diagnostic.CA1720.severity = none
+
 [*.sh]
 end_of_line = lf
 
