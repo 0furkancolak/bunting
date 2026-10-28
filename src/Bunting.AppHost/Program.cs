@@ -8,6 +8,10 @@ var db = postgres.AddDatabase("bunting");
 var server = builder.AddProject<Projects.Bunting_Server>("server")
     .WithReference(db)
     .WaitFor(db)
+    // Development-only bootstrap token for the Management API. Never use this value outside local Aspire runs.
+    .WithEnvironment("Bunting__Management__Tokens__0__Name", "dev-owner")
+    .WithEnvironment("Bunting__Management__Tokens__0__Token", "dev-owner-token")
+    .WithEnvironment("Bunting__Management__Tokens__0__Role", "Owner")
     .WithHttpHealthCheck("/health");
 
 builder.AddProject<Projects.Bunting_Admin>("admin")
