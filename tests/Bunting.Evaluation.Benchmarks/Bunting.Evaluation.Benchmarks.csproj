@@ -4,6 +4,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" />
     <ProjectReference Include="..\..\src\Bunting.Evaluation\Bunting.Evaluation.csproj" />
   </ItemGroup>
 </Project>
