@@ -1,8 +1,5 @@
-using System.Diagnostics;
-using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Net.Sockets;
 using System.Text.Json;
 using Testcontainers.PostgreSql;
 
@@ -14,7 +11,7 @@ public sealed class ConformanceFixture : IAsyncLifetime
     private const string AdminToken = "conformance-owner-token";
 
     private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:17-alpine").Build();
-    private Process? _server;
+    private ServerProcess? _server;
 
     public string BaseUrl { get; private set; } = string.Empty;
 
@@ -24,76 +21,28 @@ public sealed class ConformanceFixture : IAsyncLifetime
 
     public HttpClient Admin { get; private set; } = null!;
 
-    public static string RepoRoot { get; } = FindRepoRoot();
-
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
 
     public async ValueTask InitializeAsync()
     {
         await _postgres.StartAsync();
-        var port = FreePort();
-        BaseUrl = $"http://127.0.0.1:{port}";
-
-        var configuration = AppContext.BaseDirectory.Contains($"{Path.DirectorySeparatorChar}Release{Path.DirectorySeparatorChar}") ? "Release" : "Debug";
-        var dll = Path.Combine(RepoRoot, "src", "Bunting.Server", "bin", configuration, "net10.0", "Bunting.Server.dll");
-        var info = new ProcessStartInfo("dotnet", $"exec \"{dll}\"") { RedirectStandardOutput = true, RedirectStandardError = true };
-        info.Environment["ASPNETCORE_URLS"] = BaseUrl;
-        info.Environment["ConnectionStrings__bunting"] = _postgres.GetConnectionString();
-        info.Environment["Logging__LogLevel__Default"] = "Warning";
-        info.Environment["Bunting__Management__Tokens__0__Name"] = "conformance";
-        info.Environment["Bunting__Management__Tokens__0__Token"] = AdminToken;
-        info.Environment["Bunting__Management__Tokens__0__Role"] = "Owner";
-        _server = Process.Start(info) ?? throw new InvalidOperationException("Could not start the server.");
-        _server.OutputDataReceived += (_, _) => { };
-        _server.ErrorDataReceived += (_, _) => { };
-        _server.BeginOutputReadLine();
-        _server.BeginErrorReadLine();
+        _server = await ServerProcess.StartAsync(_postgres.GetConnectionString(), AdminToken);
+        BaseUrl = _server.BaseUrl;
 
         Admin = new HttpClient { BaseAddress = new Uri(BaseUrl) };
         Admin.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AdminToken);
-        await WaitUntilHealthy();
         await Seed();
     }
 
     public async ValueTask DisposeAsync()
     {
         Admin?.Dispose();
-        if (_server is { HasExited: false })
+        if (_server is not null)
         {
-            _server.Kill(entireProcessTree: true);
-            await _server.WaitForExitAsync();
+            await _server.DisposeAsync();
         }
 
-        _server?.Dispose();
         await _postgres.DisposeAsync();
-    }
-
-    private async Task WaitUntilHealthy()
-    {
-        var deadline = DateTime.UtcNow.AddSeconds(60);
-        while (DateTime.UtcNow < deadline)
-        {
-            if (_server!.HasExited)
-            {
-                throw new InvalidOperationException("The server exited during startup.");
-            }
-
-            try
-            {
-                if ((await Admin.GetAsync("/health")).IsSuccessStatusCode)
-                {
-                    return;
-                }
-            }
-            catch (HttpRequestException)
-            {
-                // not listening yet
-            }
-
-            await Task.Delay(250);
-        }
-
-        throw new TimeoutException("The server did not become healthy.");
     }
 
     private async Task<JsonElement> Send(HttpMethod method, string url, object? body = null, long? ifMatch = null)
@@ -160,26 +109,6 @@ public sealed class ConformanceFixture : IAsyncLifetime
 
         ServerKey = (await Send(HttpMethod.Post, "/api/v1/projects/conf/environments/production/api-keys", new { name = "server", type = "Server" })).GetProperty("key").GetString()!;
         ClientKey = (await Send(HttpMethod.Post, "/api/v1/projects/conf/environments/production/api-keys", new { name = "client", type = "Client" })).GetProperty("key").GetString()!;
-    }
-
-    private static int FreePort()
-    {
-        var listener = new TcpListener(IPAddress.Loopback, 0);
-        listener.Start();
-        var port = ((IPEndPoint)listener.LocalEndpoint).Port;
-        listener.Stop();
-        return port;
-    }
-
-    private static string FindRepoRoot()
-    {
-        var dir = new DirectoryInfo(AppContext.BaseDirectory);
-        while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "Bunting.sln")))
-        {
-            dir = dir.Parent;
-        }
-
-        return dir?.FullName ?? throw new InvalidOperationException("Bunting.sln not found.");
     }
 }
 

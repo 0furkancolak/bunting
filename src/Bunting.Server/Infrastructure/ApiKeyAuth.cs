@@ -81,6 +81,14 @@ internal sealed class ApiKeyAuthHandler(
             return header;
         }
 
+        // Browsers' EventSource cannot set headers, so the client stream additionally accepts ?apiKey= (client keys only).
+        if (request.Path.StartsWithSegments("/api/v1/client/stream")
+            && request.Query["apiKey"].ToString() is { } fromQuery
+            && fromQuery.StartsWith(Domain.ApiKey.ClientPrefix, StringComparison.Ordinal))
+        {
+            return fromQuery;
+        }
+
         var authorization = request.Headers.Authorization.ToString();
         if (authorization.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
         {

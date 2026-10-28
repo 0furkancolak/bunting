@@ -14,6 +14,8 @@
     <ProjectReference Include="..\..\src\Bunting.Evaluation\Bunting.Evaluation.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\ServerProcess.cs" Link="Shared\ServerProcess.cs" />
     <Using Include="Xunit" />
+    <Using Include="Bunting.Tests.Common" />
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@ namespace Bunting.Server.OfrepConformance;
 [Collection("conformance")]
 public class OfrepProviderConformanceTests(ConformanceFixture fixture)
 {
-    private static readonly string NodeDir = Path.Combine(ConformanceFixture.RepoRoot, "tests", "Bunting.Server.OfrepConformance", "node");
+    private static readonly string NodeDir = Path.Combine(ServerProcess.RepoRoot, "tests", "Bunting.Server.OfrepConformance", "node");
 
     private async Task<JsonElement> RunNode()
     {
